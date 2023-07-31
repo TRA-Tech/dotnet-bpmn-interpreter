@@ -38,7 +38,7 @@ namespace BpmnInterpreter.Core.BpmnReaders
             {
                 bpmnElementList.AddRange(
                     element.DescendantsAndSelf()
-                        .TakeWhile(x => x.Attribute("id") != null)
+                        .Where(x => x.Attribute("id") != null)
                         .Select(s => new BpmnElement(s))
                 );
             }

@@ -4,6 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>0.0.2</Version>
+    <Title>BPMN Interpreter</Title>
+    <Authors>TRA Tech</Authors>
+    <Company>TRA Tech</Company>
+    <Description>BPMN Interpreter for .NET</Description>
+    <RepositoryUrl>https://github.com/TRA-Tech/dotnet-bpmn-interpreter</RepositoryUrl>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>

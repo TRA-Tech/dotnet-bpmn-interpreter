@@ -11,8 +11,8 @@ namespace BpmnInterpreter.Core.BpmnElements
 
         public DataInputAssociation(XElement self) : base(self)
         {
-            SourceRef = self.Attribute("sourceRef")?.Value ?? throw new InvalidOperationException("self has no sourceRef attribute");
-            TargetRef = self.Attribute("targetRef")?.Value ?? throw new InvalidOperationException("self has no targetRef attribute");
+            SourceRef = self.Element(Namespace.GetName("sourceRef"))?.Value ?? throw new InvalidOperationException("self has no sourceRef element");
+            TargetRef = self.Element(Namespace.GetName("targetRef"))?.Value ?? throw new InvalidOperationException("self has no targetRef element");
         }
     }
 }
