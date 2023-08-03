@@ -60,5 +60,16 @@ namespace BpmnInterpreter.Core.BpmnElements
             _id = _self.Attribute("id")?.Value ?? throw new InvalidOperationException("self has no id attribute");
             _namespace = _self.Name.Namespace;
         }
+
+        public bool HasExtensionElementOf(XName extensionElementName)
+        {
+            return ExtensionElements.Any(a => a.Name == extensionElementName);
+        }
+
+        public bool HasExtensionElementOf(XNamespace xNamespace, string extensionElementName)
+        {
+            var name = xNamespace.GetName(extensionElementName);
+            return ExtensionElements.Any(a => a.Name == name);
+        }
     }
 }
