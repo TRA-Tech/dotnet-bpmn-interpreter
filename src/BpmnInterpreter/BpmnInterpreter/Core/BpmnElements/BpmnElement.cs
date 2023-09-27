@@ -7,11 +7,13 @@ namespace BpmnInterpreter.Core.BpmnElements
     {
         private readonly string _type;
         private readonly string _id;
+        private readonly string? _name;
         private readonly XElement _self;
         private readonly XNamespace _namespace;
 
         public string Type { get { return _type; } }
         public string Id { get { return _id; } }
+        public string? Name { get { return _name; } }
         public XElement Self { get { return _self; } }
         public XNamespace Namespace { get { return _namespace; } }
 
@@ -58,7 +60,9 @@ namespace BpmnInterpreter.Core.BpmnElements
             _self = self ?? throw new ArgumentNullException(nameof(self));
             _type = _self.Name.LocalName;
             _id = _self.Attribute("id")?.Value ?? throw new InvalidOperationException("self has no id attribute");
+            _name = _self.Attribute("name")?.Value;
             _namespace = _self.Name.Namespace;
+
         }
 
         public bool HasExtensionElementOf(XName extensionElementName)
