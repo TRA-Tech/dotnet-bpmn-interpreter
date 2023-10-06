@@ -1,6 +1,6 @@
-﻿using BpmnInterpreter.Core.BpmnElements;
+﻿using TraTech.BpmnInterpreter.Core.BpmnElements;
 
-namespace BpmnInterpreter.Abstractions
+namespace TraTech.BpmnInterpreter.Abstractions
 {
     public interface IBpmnReader
     {

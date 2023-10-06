@@ -1,5 +1,5 @@
-﻿using BpmnInterpreter.Core.BpmnElements;
-using BpmnInterpreter.Core.BpmnReaders;
+﻿using TraTech.BpmnInterpreter.Core.BpmnElements;
+using TraTech.BpmnInterpreter.Core.BpmnReaders;
 using System.Text;
 using System.Xml.Linq;
 

@@ -1,8 +1,8 @@
-﻿using BpmnInterpreter.Abstractions;
-using BpmnInterpreter.Core.BpmnElements;
+﻿using TraTech.BpmnInterpreter.Abstractions;
+using TraTech.BpmnInterpreter.Core.BpmnElements;
 using System.Xml.Linq;
 
-namespace BpmnInterpreter.Core.BpmnReaders
+namespace TraTech.BpmnInterpreter.Core.BpmnReaders
 {
     public class BpmnProcessReader : IBpmnReader
     {

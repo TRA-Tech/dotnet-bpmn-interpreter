@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace BpmnInterpreter.Core.BpmnElements
+namespace TraTech.BpmnInterpreter.Core.BpmnElements
 {
     public class DataObjectReference : BpmnElement
     {

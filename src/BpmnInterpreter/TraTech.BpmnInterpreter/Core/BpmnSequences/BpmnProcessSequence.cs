@@ -1,7 +1,7 @@
-﻿using BpmnInterpreter.Core.BpmnElements;
-using BpmnInterpreter.Core.BpmnElements.SequenceElements;
+﻿using TraTech.BpmnInterpreter.Core.BpmnElements;
+using TraTech.BpmnInterpreter.Core.BpmnElements.SequenceElements;
 
-namespace BpmnInterpreter.Core.BpmnSequences
+namespace TraTech.BpmnInterpreter.Core.BpmnSequences
 {
     public class BpmnProcessSequence
     {

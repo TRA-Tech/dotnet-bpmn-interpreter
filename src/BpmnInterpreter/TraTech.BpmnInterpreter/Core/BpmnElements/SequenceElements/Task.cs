@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace BpmnInterpreter.Core.BpmnElements.SequenceElements
+namespace TraTech.BpmnInterpreter.Core.BpmnElements.SequenceElements
 {
     public class Task : BpmnSequenceElement
     {

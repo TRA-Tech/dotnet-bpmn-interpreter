@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BpmnInterpreter\BpmnInterpreter.csproj" />
+    <ProjectReference Include="..\TraTech.BpmnInterpreter\TraTech.BpmnInterpreter.csproj" />
   </ItemGroup>
 
 </Project>

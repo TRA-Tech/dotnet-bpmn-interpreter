@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace BpmnInterpreter.Extensions
+namespace TraTech.BpmnInterpreter.Extensions
 {
     internal static class XElementExtensions
     {

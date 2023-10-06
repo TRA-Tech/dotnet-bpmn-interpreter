@@ -4,8 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.0.3</Version>
-    <Title>BPMN Interpreter</Title>
+    <Version>0.0.4</Version>
+    <Title>TRATech.BPMNInterpreter</Title>
     <Authors>TRA Tech</Authors>
     <Company>TRA Tech</Company>
     <Description>BPMN Interpreter for .NET</Description>
