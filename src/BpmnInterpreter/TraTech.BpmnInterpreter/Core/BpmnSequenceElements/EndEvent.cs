@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace TraTech.BpmnInterpreter.Core.BpmnElements.SequenceElements
+namespace TraTech.BpmnInterpreter.Core.BpmnSequenceElements
 {
     public class EndEvent : BpmnSequenceElement
     {

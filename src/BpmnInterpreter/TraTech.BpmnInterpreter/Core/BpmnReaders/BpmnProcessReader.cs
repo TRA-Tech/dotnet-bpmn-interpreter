@@ -6,35 +6,25 @@ namespace TraTech.BpmnInterpreter.Core.BpmnReaders
 {
     public class BpmnProcessReader : IBpmnReader
     {
-        private readonly XNamespace _bpmnNameSpace;
+        public readonly XNamespace BpmnNameSpace;
 
-        private XDocument? _doc;
-
-        private XElement? _processElement;
-
-
-        public BpmnProcessReader(XNamespace BpmnNameSpace)
+        public BpmnProcessReader(XNamespace bpmnNameSpace)
         {
-            _bpmnNameSpace = BpmnNameSpace;
+            BpmnNameSpace = bpmnNameSpace;
         }
 
-        public void Load(Stream bpmnStream)
+        public IEnumerable<BpmnElement> Read(XDocument bpmnDocument)
         {
-            _doc = XDocument.Load(bpmnStream);
-            _processElement = _doc.Root?.Element(_bpmnNameSpace.GetName("process"))
-                ?? throw new NullReferenceException("no root or process element");
-        }
+            var processElement = bpmnDocument.Root?.Element(BpmnNameSpace.GetName(Process.ElementTypeName));
 
-        public IEnumerable<BpmnElement> Read()
-        {
-            if (_processElement == null) throw new NullReferenceException(nameof(_processElement));
+            if (processElement == null) throw new NullReferenceException(nameof(processElement));
 
             List<BpmnElement> bpmnElementList = new()
             {
-                new BpmnElement(_processElement)
+                new BpmnElement(processElement)
             };
 
-            foreach (XElement element in _processElement.Elements())
+            foreach (XElement element in processElement.Elements())
             {
                 bpmnElementList.AddRange(
                     element.DescendantsAndSelf()

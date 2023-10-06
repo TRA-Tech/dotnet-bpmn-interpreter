@@ -1,7 +1,9 @@
-﻿using TraTech.BpmnInterpreter.Core.BpmnElements;
-using TraTech.BpmnInterpreter.Core.BpmnReaders;
+﻿using System.Diagnostics;
 using System.Text;
 using System.Xml.Linq;
+using TraTech.BpmnInterpreter.Core.BpmnElements;
+using TraTech.BpmnInterpreter.Core.BpmnReaders;
+using BpmnProcess = TraTech.BpmnInterpreter.Core.BpmnElements.Process;
 
 namespace Playground
 {
@@ -100,8 +102,8 @@ namespace Playground
 
             using (var ms = new MemoryStream(Encoding.ASCII.GetBytes(xml)))
             {
-                bpmnProcessReader.Load(ms);
-                bpmnElements = bpmnProcessReader.Read();
+                var bpmnDocument = XDocument.Load(ms);
+                bpmnElements = bpmnProcessReader.Read(bpmnDocument);
             }
 
             var dataInputAssociation = bpmnElements

@@ -1,7 +1,8 @@
 ﻿using TraTech.BpmnInterpreter.Extensions;
 using System.Xml.Linq;
+using TraTech.BpmnInterpreter.Core.BpmnElements;
 
-namespace TraTech.BpmnInterpreter.Core.BpmnElements.SequenceElements
+namespace TraTech.BpmnInterpreter.Core.BpmnSequenceElements
 {
     public class BpmnSequenceElement : BpmnElement
     {

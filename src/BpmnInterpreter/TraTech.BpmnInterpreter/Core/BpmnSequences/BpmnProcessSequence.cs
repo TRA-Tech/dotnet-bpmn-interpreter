@@ -1,5 +1,5 @@
 ﻿using TraTech.BpmnInterpreter.Core.BpmnElements;
-using TraTech.BpmnInterpreter.Core.BpmnElements.SequenceElements;
+using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace TraTech.BpmnInterpreter.Core.BpmnSequences
 {
