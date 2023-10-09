@@ -2,7 +2,7 @@
 
 namespace TraTech.BpmnInterpreter.Extensions
 {
-    internal static class XElementExtensions
+    public static class XElementExtensions
     {
         public static IEnumerable<string> GetOutgoings(this XElement xElement, XNamespace? xNamespace = null)
         {

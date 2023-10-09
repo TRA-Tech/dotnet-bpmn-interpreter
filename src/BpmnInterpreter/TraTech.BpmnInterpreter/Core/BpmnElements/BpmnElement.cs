@@ -75,5 +75,30 @@ namespace TraTech.BpmnInterpreter.Core.BpmnElements
             var name = xNamespace.GetName(extensionElementName);
             return ExtensionElements.Any(a => a.Name == name);
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is null)
+                return false;
+
+            if (ReferenceEquals(obj, this))
+                return false;
+
+            if (obj.GetType() != GetType())
+                return false;
+
+            if (obj is not BpmnElement bpmnElementObj)
+                return false;
+
+            if (bpmnElementObj.Id == Id)
+                return true;
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }
