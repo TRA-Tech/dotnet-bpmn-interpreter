@@ -1,15 +1,13 @@
-﻿using System.Collections;
-using TraTech.BpmnInterpreter.Core.BpmnElements;
-using TraTech.BpmnInterpreter.Core.BpmnSequenceElements;
+﻿using TraTech.BpmnInterpreter.Core.Elements;
+using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace TraTech.BpmnInterpreter.Abstractions
 {
-    public abstract class BpmnSequence
+    public abstract class BaseSequence
     {
         protected ICollection<BpmnSequenceElement> _bpmnSequenceElements;
         public IEnumerable<BpmnSequenceElement> BpmnSequenceElements { get => _bpmnSequenceElements; }
 
-        protected ICollection<StartEvent> _startEventElements;
         public IEnumerable<StartEvent> StartEventElements
         {
             get => _bpmnSequenceElements
@@ -17,7 +15,6 @@ namespace TraTech.BpmnInterpreter.Abstractions
                 .Select(s => new StartEvent(s.Self, s.NextElements));
         }
 
-        protected ICollection<EndEvent> _endEventElements;
         public IEnumerable<EndEvent> EndEventElements
         {
             get => _bpmnSequenceElements
@@ -28,14 +25,12 @@ namespace TraTech.BpmnInterpreter.Abstractions
         protected ICollection<SequenceFlow> _sequenceFlowElements;
         public IEnumerable<SequenceFlow> SequenceFlowElements { get => _sequenceFlowElements; }
 
-        public bool HasAStart { get => _startEventElements.Any(); }
-        public bool HasAnEnd { get => _endEventElements.Any(); }
+        public bool HasAStart { get => _bpmnSequenceElements.Any(a => a.Type == StartEvent.ElementTypeName); }
+        public bool HasAnEnd { get => _bpmnSequenceElements.Any(a => a.Type == EndEvent.ElementTypeName); }
 
-        public BpmnSequence(IEnumerable<BpmnElement>? bpmnElements = null)
+        public BaseSequence(IEnumerable<BpmnElement>? bpmnElements = null)
         {
             _bpmnSequenceElements = new List<BpmnSequenceElement>();
-            _startEventElements = new List<StartEvent>();
-            _endEventElements = new List<EndEvent>();
             _sequenceFlowElements = new List<SequenceFlow>();
 
             if (bpmnElements != null)

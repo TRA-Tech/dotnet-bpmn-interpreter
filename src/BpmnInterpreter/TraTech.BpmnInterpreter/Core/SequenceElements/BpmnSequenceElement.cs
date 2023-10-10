@@ -1,8 +1,8 @@
 ﻿using TraTech.BpmnInterpreter.Extensions;
 using System.Xml.Linq;
-using TraTech.BpmnInterpreter.Core.BpmnElements;
+using TraTech.BpmnInterpreter.Core.Elements;
 
-namespace TraTech.BpmnInterpreter.Core.BpmnSequenceElements
+namespace TraTech.BpmnInterpreter.Core.SequenceElements
 {
     public class BpmnSequenceElement : BpmnElement
     {
@@ -15,6 +15,12 @@ namespace TraTech.BpmnInterpreter.Core.BpmnSequenceElements
         public bool HasPreviousElements { get => PreviousElements.Any(); }
         public bool HasNextElements { get => NextElements.Any(); }
 
+        private bool _isVisited = false;
+        public bool IsVisited { get => _isVisited; }
+
+        private bool _isProcessed = false;
+        public bool IsProcessed { get => _isProcessed; }
+
         public BpmnSequenceElement(
             XElement self,
             IEnumerable<BpmnSequenceElement>? previousElements = null,
@@ -25,6 +31,17 @@ namespace TraTech.BpmnInterpreter.Core.BpmnSequenceElements
             NextElements = nextElements == null ? new List<BpmnSequenceElement>() : new List<BpmnSequenceElement>(nextElements);
             Incomings = self.GetIncomings();
             Outgoings = self.GetOutgoings();
+        }
+
+        public void Visited()
+        {
+            _isVisited = true;
+        }
+
+        public void Processed()
+        {
+            _isVisited = true;
+            _isProcessed = true;
         }
     }
 }

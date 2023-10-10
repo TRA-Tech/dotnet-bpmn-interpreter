@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Xml.Linq;
 
-namespace TraTech.BpmnInterpreter.Core.BpmnElements
+namespace TraTech.BpmnInterpreter.Core.Elements
 {
     public class BpmnElement
     {
@@ -79,9 +79,6 @@ namespace TraTech.BpmnInterpreter.Core.BpmnElements
         public override bool Equals(object? obj)
         {
             if (obj is null)
-                return false;
-
-            if (ReferenceEquals(obj, this))
                 return false;
 
             if (obj.GetType() != GetType())

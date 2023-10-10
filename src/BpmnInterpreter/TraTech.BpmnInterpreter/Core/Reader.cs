@@ -1,14 +1,14 @@
 ﻿using TraTech.BpmnInterpreter.Abstractions;
-using TraTech.BpmnInterpreter.Core.BpmnElements;
+using TraTech.BpmnInterpreter.Core.Elements;
 using System.Xml.Linq;
 
-namespace TraTech.BpmnInterpreter.Core.BpmnReaders
+namespace TraTech.BpmnInterpreter.Core
 {
-    public class BpmnProcessReader : IBpmnReader
+    public class Reader : IReader
     {
         public readonly XNamespace BpmnNameSpace;
 
-        public BpmnProcessReader(XNamespace bpmnNameSpace)
+        public Reader(XNamespace bpmnNameSpace)
         {
             BpmnNameSpace = bpmnNameSpace;
         }

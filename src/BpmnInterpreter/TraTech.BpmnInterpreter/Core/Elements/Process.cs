@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace TraTech.BpmnInterpreter.Core.BpmnElements
+namespace TraTech.BpmnInterpreter.Core.Elements
 {
     public class Process : BpmnElement
     {

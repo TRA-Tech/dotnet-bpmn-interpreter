@@ -1,15 +1,14 @@
-﻿using System.Xml.Linq;
-using TraTech.BpmnInterpreter.Abstractions;
-using TraTech.BpmnInterpreter.Core.BpmnElements;
-using TraTech.BpmnInterpreter.Core.BpmnSequenceElements;
+﻿using TraTech.BpmnInterpreter.Abstractions;
+using TraTech.BpmnInterpreter.Core.Elements;
+using TraTech.BpmnInterpreter.Core.SequenceElements;
 
-namespace TraTech.BpmnInterpreter.Core.BpmnSequences
+namespace TraTech.BpmnInterpreter.Core
 {
-    public class BpmnProcessSequence : BpmnSequence
+    public class Sequence : BaseSequence
     {
-        public BpmnProcessSequence() { }
+        public Sequence() { }
 
-        public BpmnProcessSequence(IEnumerable<BpmnElement> bpmnElements) : base(bpmnElements) { }
+        public Sequence(IEnumerable<BpmnElement> bpmnElements) : base(bpmnElements) { }
 
         protected override void SetBpmnSequenceElements(IEnumerable<BpmnElement> bpmnElements)
         {

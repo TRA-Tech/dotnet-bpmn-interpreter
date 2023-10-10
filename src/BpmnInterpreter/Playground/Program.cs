@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using System.Xml.Linq;
-using TraTech.BpmnInterpreter.Core.BpmnElements;
-using TraTech.BpmnInterpreter.Core.BpmnReaders;
-using TraTech.BpmnInterpreter.Core.BpmnSequences;
-using BpmnProcess = TraTech.BpmnInterpreter.Core.BpmnElements.Process;
+using TraTech.BpmnInterpreter.Abstractions;
+using TraTech.BpmnInterpreter.Core;
+using TraTech.BpmnInterpreter.Core.Elements;
+using TraTech.BpmnInterpreter.Core.SequenceElements;
+using BpmnSequenceElements = TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace Playground
 {
@@ -18,147 +18,199 @@ namespace Playground
   <semantic:message id=""_1275940932433"" />
   <semantic:message id=""_1275940932198"" />
   <semantic:process id=""Process_0pbbn3n"">
-    <semantic:startEvent id=""Event_0xfl0hc"">
-      <semantic:outgoing>Flow_1c5nc61</semantic:outgoing>
-    </semantic:startEvent>
-    <semantic:task id=""Activity_1wejw3i"">
+    <semantic:task id=""Activity_0hxdw8q"" name=""SELECT"">
       <semantic:extensionElements>
         <tra:selects dataSource="""" variableName="""" />
       </semantic:extensionElements>
-      <semantic:incoming>Flow_1c5nc61</semantic:incoming>
-      <semantic:outgoing>Flow_02j5fb8</semantic:outgoing>
-      <semantic:outgoing>Flow_1umsan9</semantic:outgoing>
+      <semantic:incoming>Flow_0bkn3kr</semantic:incoming>
+      <semantic:incoming>Flow_0c5i9gu</semantic:incoming>
+      <semantic:incoming>Flow_0itf0b0</semantic:incoming>
+      <semantic:incoming>Flow_1k739p1</semantic:incoming>
+      <semantic:outgoing>Flow_0yu2opd</semantic:outgoing>
+      <semantic:property id=""Property_1i4kf75"" name=""__targetRef_placeholder"" />
+      <semantic:dataInputAssociation id=""DataInputAssociation_0x1rurt"">
+        <semantic:sourceRef>DataObjectReference_0k0y8sw</semantic:sourceRef>
+        <semantic:targetRef>Property_1i4kf75</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataInputAssociation id=""DataInputAssociation_1ihg61s"">
+        <semantic:sourceRef>DataObjectReference_0wo11vb</semantic:sourceRef>
+        <semantic:targetRef>Property_1i4kf75</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataInputAssociation id=""DataInputAssociation_0l2nv0g"">
+        <semantic:sourceRef>DataObjectReference_1m0phwu</semantic:sourceRef>
+        <semantic:targetRef>Property_1i4kf75</semantic:targetRef>
+      </semantic:dataInputAssociation>
     </semantic:task>
-    <semantic:sequenceFlow id=""Flow_1c5nc61"" sourceRef=""Event_0xfl0hc"" targetRef=""Activity_1wejw3i"" />
-    <semantic:task id=""Activity_0wk076j"">
-      <semantic:extensionElements>
-        <tra:selects dataSource="""" variableName="""" />
-      </semantic:extensionElements>
-      <semantic:incoming>Flow_02j5fb8</semantic:incoming>
-      <semantic:outgoing>Flow_15e65ba</semantic:outgoing>
-    </semantic:task>
-    <semantic:task id=""Activity_1re52l3"">
-      <semantic:extensionElements>
-        <tra:selects dataSource="""" variableName="""" />
-      </semantic:extensionElements>
-      <semantic:incoming>Flow_1umsan9</semantic:incoming>
-      <semantic:outgoing>Flow_1cwf3nz</semantic:outgoing>
-    </semantic:task>
-    <semantic:sequenceFlow id=""Flow_02j5fb8"" sourceRef=""Activity_1wejw3i"" targetRef=""Activity_0wk076j"" />
-    <semantic:sequenceFlow id=""Flow_1umsan9"" sourceRef=""Activity_1wejw3i"" targetRef=""Activity_1re52l3"" />
-    <semantic:exclusiveGateway id=""Gateway_07c1h1y"">
-      <semantic:incoming>Flow_1cwf3nz</semantic:incoming>
-      <semantic:incoming>Flow_15e65ba</semantic:incoming>
-      <semantic:outgoing>Flow_1tj0zgr</semantic:outgoing>
-      <semantic:outgoing>Flow_0aoqljy</semantic:outgoing>
-    </semantic:exclusiveGateway>
-    <semantic:sequenceFlow id=""Flow_1cwf3nz"" sourceRef=""Activity_1re52l3"" targetRef=""Gateway_07c1h1y"" />
-    <semantic:sequenceFlow id=""Flow_15e65ba"" sourceRef=""Activity_0wk076j"" targetRef=""Gateway_07c1h1y"" />
-    <semantic:task id=""Activity_09lx777"">
-      <semantic:extensionElements>
-        <tra:selects dataSource="""" variableName="""" />
-      </semantic:extensionElements>
-      <semantic:incoming>Flow_0aoqljy</semantic:incoming>
-      <semantic:outgoing>Flow_1ev91p1</semantic:outgoing>
-    </semantic:task>
-    <semantic:task id=""Activity_14aa10v"">
-      <semantic:extensionElements>
-        <tra:selects dataSource="""" variableName="""" />
-      </semantic:extensionElements>
-      <semantic:incoming>Flow_1tj0zgr</semantic:incoming>
-      <semantic:outgoing>Flow_10jm4kk</semantic:outgoing>
-    </semantic:task>
-    <semantic:sequenceFlow id=""Flow_1tj0zgr"" sourceRef=""Gateway_07c1h1y"" targetRef=""Activity_14aa10v"" />
-    <semantic:sequenceFlow id=""Flow_0aoqljy"" sourceRef=""Gateway_07c1h1y"" targetRef=""Activity_09lx777"" />
-    <semantic:endEvent id=""Event_18pzjtf"">
-      <semantic:incoming>Flow_1ev91p1</semantic:incoming>
-      <semantic:incoming>Flow_10jm4kk</semantic:incoming>
+    <semantic:endEvent id=""Event_0t73mtb"" name=""END"">
+      <semantic:incoming>Flow_0yu2opd</semantic:incoming>
     </semantic:endEvent>
-    <semantic:sequenceFlow id=""Flow_1ev91p1"" sourceRef=""Activity_09lx777"" targetRef=""Event_18pzjtf"" />
-    <semantic:sequenceFlow id=""Flow_10jm4kk"" sourceRef=""Activity_14aa10v"" targetRef=""Event_18pzjtf"" />
+    <semantic:sequenceFlow id=""Flow_0yu2opd"" sourceRef=""Activity_0hxdw8q"" targetRef=""Event_0t73mtb"" />
+    <semantic:dataStoreReference id=""DataStoreReference_02tl2lv"" name=""Kredi"" tra:tableName=""Kredi"" />
+    <semantic:dataStoreReference id=""DataStoreReference_0culd5t"" name=""Kur"" tra:tableName=""Kur"" />
+    <semantic:dataStoreReference id=""DataStoreReference_0xj4tqc"" name=""Mevduat"" tra:tableName=""Mevduat"" />
+    <semantic:dataObjectReference id=""DataObjectReference_0k0y8sw"" name=""SB100"" dataObjectRef=""DataObject_137zsin"" tra:reportName=""SB100"" />
+    <semantic:dataObject id=""DataObject_137zsin"" />
+    <semantic:dataObjectReference id=""DataObjectReference_0wo11vb"" name=""ST510"" dataObjectRef=""DataObject_1s6mjbo"" tra:reportName=""ST510"" />
+    <semantic:dataObject id=""DataObject_1s6mjbo"" />
+    <semantic:dataObjectReference id=""DataObjectReference_1m0phwu"" name=""VK100"" dataObjectRef=""DataObject_07nfht5"" tra:reportName=""VK100"" />
+    <semantic:dataObject id=""DataObject_07nfht5"" />
+    <semantic:startEvent id=""Event_027wyna"">
+      <semantic:outgoing>Flow_1k739p1</semantic:outgoing>
+    </semantic:startEvent>
+    <semantic:task id=""Activity_0v9v63i"">
+      <semantic:extensionElements>
+        <tra:selects dataSource="""" variableName="""" />
+      </semantic:extensionElements>
+      <semantic:outgoing>Flow_0itf0b0</semantic:outgoing>
+      <semantic:property id=""Property_18cvd1y"" name=""__targetRef_placeholder"" />
+      <semantic:dataInputAssociation id=""DataInputAssociation_1yows3b"">
+        <semantic:sourceRef>DataStoreReference_02tl2lv</semantic:sourceRef>
+        <semantic:targetRef>Property_18cvd1y</semantic:targetRef>
+      </semantic:dataInputAssociation>
+    </semantic:task>
+    <semantic:task id=""Activity_0nxeubq"">
+      <semantic:extensionElements>
+        <tra:selects dataSource="""" variableName="""" />
+      </semantic:extensionElements>
+      <semantic:outgoing>Flow_0c5i9gu</semantic:outgoing>
+      <semantic:property id=""Property_12892f9"" name=""__targetRef_placeholder"" />
+      <semantic:dataInputAssociation id=""DataInputAssociation_1g8ufkx"">
+        <semantic:sourceRef>DataStoreReference_0culd5t</semantic:sourceRef>
+        <semantic:targetRef>Property_12892f9</semantic:targetRef>
+      </semantic:dataInputAssociation>
+    </semantic:task>
+    <semantic:task id=""Activity_0ni3sui"">
+      <semantic:extensionElements>
+        <tra:selects dataSource="""" variableName="""" />
+      </semantic:extensionElements>
+      <semantic:outgoing>Flow_0bkn3kr</semantic:outgoing>
+      <semantic:property id=""Property_0g2du9l"" name=""__targetRef_placeholder"" />
+      <semantic:dataInputAssociation id=""DataInputAssociation_1pg6yu7"">
+        <semantic:sourceRef>DataStoreReference_0xj4tqc</semantic:sourceRef>
+        <semantic:targetRef>Property_0g2du9l</semantic:targetRef>
+      </semantic:dataInputAssociation>
+    </semantic:task>
+    <semantic:sequenceFlow id=""Flow_0bkn3kr"" sourceRef=""Activity_0ni3sui"" targetRef=""Activity_0hxdw8q"" />
+    <semantic:sequenceFlow id=""Flow_0c5i9gu"" sourceRef=""Activity_0nxeubq"" targetRef=""Activity_0hxdw8q"" />
+    <semantic:sequenceFlow id=""Flow_0itf0b0"" sourceRef=""Activity_0v9v63i"" targetRef=""Activity_0hxdw8q"" />
+    <semantic:sequenceFlow id=""Flow_1k739p1"" sourceRef=""Event_027wyna"" targetRef=""Activity_0hxdw8q"" />
   </semantic:process>
   <bpmndi:BPMNDiagram id=""Trisotech.Visio-_6"" name=""Untitled Diagram"" documentation="""" resolution=""96.00000267028808"">
     <bpmndi:BPMNPlane bpmnElement=""Process_0pbbn3n"">
-      <bpmndi:BPMNShape id=""Event_0xfl0hc_di"" bpmnElement=""Event_0xfl0hc"">
-        <dc:Bounds x=""262"" y=""262"" width=""36"" height=""36"" />
+      <bpmndi:BPMNShape id=""Activity_0hxdw8q_di"" bpmnElement=""Activity_0hxdw8q"">
+        <dc:Bounds x=""570"" y=""280"" width=""100"" height=""80"" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Activity_1wejw3i_di"" bpmnElement=""Activity_1wejw3i"">
-        <dc:Bounds x=""360"" y=""240"" width=""100"" height=""80"" />
+      <bpmndi:BPMNShape id=""DataObjectReference_0k0y8sw_di"" bpmnElement=""DataObjectReference_0k0y8sw"">
+        <dc:Bounds x=""762"" y=""215"" width=""36"" height=""50"" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x=""763"" y=""272"" width=""34"" height=""14"" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Activity_0wk076j_di"" bpmnElement=""Activity_0wk076j"">
-        <dc:Bounds x=""550"" y=""180"" width=""100"" height=""80"" />
+      <bpmndi:BPMNShape id=""BPMNShape_01ymeq6"" bpmnElement=""DataObjectReference_0wo11vb"">
+        <dc:Bounds x=""762"" y=""295"" width=""36"" height=""50"" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x=""764"" y=""352"" width=""33"" height=""14"" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Activity_1re52l3_di"" bpmnElement=""Activity_1re52l3"">
-        <dc:Bounds x=""550"" y=""310"" width=""100"" height=""80"" />
+      <bpmndi:BPMNShape id=""BPMNShape_1rhk6yw"" bpmnElement=""DataObjectReference_1m0phwu"">
+        <dc:Bounds x=""762"" y=""375"" width=""36"" height=""50"" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x=""764"" y=""432"" width=""33"" height=""14"" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Gateway_07c1h1y_di"" bpmnElement=""Gateway_07c1h1y"" isMarkerVisible=""true"">
-        <dc:Bounds x=""705"" y=""255"" width=""50"" height=""50"" />
+      <bpmndi:BPMNShape id=""Event_0t73mtb_di"" bpmnElement=""Event_0t73mtb"">
+        <dc:Bounds x=""602"" y=""422"" width=""36"" height=""36"" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x=""608"" y=""465"" width=""24"" height=""14"" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Activity_09lx777_di"" bpmnElement=""Activity_09lx777"">
-        <dc:Bounds x=""800"" y=""180"" width=""100"" height=""80"" />
+      <bpmndi:BPMNShape id=""Event_027wyna_di"" bpmnElement=""Event_027wyna"">
+        <dc:Bounds x=""602"" y=""182"" width=""36"" height=""36"" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Activity_14aa10v_di"" bpmnElement=""Activity_14aa10v"">
-        <dc:Bounds x=""800"" y=""310"" width=""100"" height=""80"" />
+      <bpmndi:BPMNShape id=""DataStoreReference_02tl2lv_di"" bpmnElement=""DataStoreReference_02tl2lv"">
+        <dc:Bounds x=""255"" y=""185"" width=""50"" height=""50"" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x=""268"" y=""242"" width=""26"" height=""14"" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Event_18pzjtf_di"" bpmnElement=""Event_18pzjtf"">
-        <dc:Bounds x=""962"" y=""262"" width=""36"" height=""36"" />
+      <bpmndi:BPMNShape id=""BPMNShape_16qfsna"" bpmnElement=""DataStoreReference_0culd5t"">
+        <dc:Bounds x=""255"" y=""275"" width=""50"" height=""50"" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x=""271"" y=""332"" width=""19"" height=""14"" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id=""Flow_1c5nc61_di"" bpmnElement=""Flow_1c5nc61"">
-        <di:waypoint x=""298"" y=""280"" />
-        <di:waypoint x=""360"" y=""280"" />
+      <bpmndi:BPMNShape id=""BPMNShape_1lrdu73"" bpmnElement=""DataStoreReference_0xj4tqc"">
+        <dc:Bounds x=""255"" y=""375"" width=""50"" height=""50"" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x=""258"" y=""432"" width=""44"" height=""14"" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id=""Activity_0v9v63i_di"" bpmnElement=""Activity_0v9v63i"">
+        <dc:Bounds x=""370"" y=""170"" width=""100"" height=""80"" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id=""BPMNShape_00h0g39"" bpmnElement=""Activity_0nxeubq"">
+        <dc:Bounds x=""370"" y=""280"" width=""100"" height=""80"" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id=""BPMNShape_13etb0a"" bpmnElement=""Activity_0ni3sui"">
+        <dc:Bounds x=""370"" y=""390"" width=""100"" height=""80"" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id=""DataInputAssociation_0x1rurt_di"" bpmnElement=""DataInputAssociation_0x1rurt"">
+        <di:waypoint x=""762"" y=""249"" />
+        <di:waypoint x=""670"" y=""295"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_02j5fb8_di"" bpmnElement=""Flow_02j5fb8"">
-        <di:waypoint x=""460"" y=""280"" />
-        <di:waypoint x=""505"" y=""280"" />
-        <di:waypoint x=""505"" y=""220"" />
-        <di:waypoint x=""550"" y=""220"" />
+      <bpmndi:BPMNEdge id=""DataInputAssociation_1ihg61s_di"" bpmnElement=""DataInputAssociation_1ihg61s"">
+        <di:waypoint x=""762"" y=""320"" />
+        <di:waypoint x=""670"" y=""320"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_1umsan9_di"" bpmnElement=""Flow_1umsan9"">
-        <di:waypoint x=""460"" y=""280"" />
-        <di:waypoint x=""505"" y=""280"" />
-        <di:waypoint x=""505"" y=""350"" />
-        <di:waypoint x=""550"" y=""350"" />
+      <bpmndi:BPMNEdge id=""DataInputAssociation_0l2nv0g_di"" bpmnElement=""DataInputAssociation_0l2nv0g"">
+        <di:waypoint x=""762"" y=""391"" />
+        <di:waypoint x=""670"" y=""345"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_1cwf3nz_di"" bpmnElement=""Flow_1cwf3nz"">
-        <di:waypoint x=""650"" y=""350"" />
-        <di:waypoint x=""730"" y=""350"" />
-        <di:waypoint x=""730"" y=""305"" />
+      <bpmndi:BPMNEdge id=""Flow_0yu2opd_di"" bpmnElement=""Flow_0yu2opd"">
+        <di:waypoint x=""620"" y=""360"" />
+        <di:waypoint x=""620"" y=""422"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_15e65ba_di"" bpmnElement=""Flow_15e65ba"">
-        <di:waypoint x=""650"" y=""220"" />
-        <di:waypoint x=""730"" y=""220"" />
-        <di:waypoint x=""730"" y=""255"" />
+      <bpmndi:BPMNEdge id=""Flow_0bkn3kr_di"" bpmnElement=""Flow_0bkn3kr"">
+        <di:waypoint x=""470"" y=""430"" />
+        <di:waypoint x=""520"" y=""430"" />
+        <di:waypoint x=""520"" y=""320"" />
+        <di:waypoint x=""570"" y=""320"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_1tj0zgr_di"" bpmnElement=""Flow_1tj0zgr"">
-        <di:waypoint x=""750"" y=""285"" />
-        <di:waypoint x=""750"" y=""350"" />
-        <di:waypoint x=""800"" y=""350"" />
+      <bpmndi:BPMNEdge id=""Flow_0c5i9gu_di"" bpmnElement=""Flow_0c5i9gu"">
+        <di:waypoint x=""470"" y=""320"" />
+        <di:waypoint x=""570"" y=""320"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_0aoqljy_di"" bpmnElement=""Flow_0aoqljy"">
-        <di:waypoint x=""750"" y=""275"" />
-        <di:waypoint x=""750"" y=""220"" />
-        <di:waypoint x=""800"" y=""220"" />
+      <bpmndi:BPMNEdge id=""Flow_0itf0b0_di"" bpmnElement=""Flow_0itf0b0"">
+        <di:waypoint x=""470"" y=""210"" />
+        <di:waypoint x=""520"" y=""210"" />
+        <di:waypoint x=""520"" y=""320"" />
+        <di:waypoint x=""570"" y=""320"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_1ev91p1_di"" bpmnElement=""Flow_1ev91p1"">
-        <di:waypoint x=""900"" y=""220"" />
-        <di:waypoint x=""931"" y=""220"" />
-        <di:waypoint x=""931"" y=""280"" />
-        <di:waypoint x=""962"" y=""280"" />
+      <bpmndi:BPMNEdge id=""DataInputAssociation_1yows3b_di"" bpmnElement=""DataInputAssociation_1yows3b"">
+        <di:waypoint x=""305"" y=""210"" />
+        <di:waypoint x=""370"" y=""210"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_10jm4kk_di"" bpmnElement=""Flow_10jm4kk"">
-        <di:waypoint x=""900"" y=""350"" />
-        <di:waypoint x=""931"" y=""350"" />
-        <di:waypoint x=""931"" y=""280"" />
-        <di:waypoint x=""962"" y=""280"" />
+      <bpmndi:BPMNEdge id=""DataInputAssociation_1g8ufkx_di"" bpmnElement=""DataInputAssociation_1g8ufkx"">
+        <di:waypoint x=""305"" y=""304"" />
+        <di:waypoint x=""370"" y=""313"" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id=""DataInputAssociation_1pg6yu7_di"" bpmnElement=""DataInputAssociation_1pg6yu7"">
+        <di:waypoint x=""305"" y=""405"" />
+        <di:waypoint x=""370"" y=""419"" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id=""Flow_1k739p1_di"" bpmnElement=""Flow_1k739p1"">
+        <di:waypoint x=""620"" y=""218"" />
+        <di:waypoint x=""620"" y=""280"" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </semantic:definitions>
 
-            
-            ";
 
-            var bpmnProcessReader = new BpmnProcessReader("http://www.omg.org/spec/BPMN/20100524/MODEL");
+";
+
+            var bpmnProcessReader = new Reader("http://www.omg.org/spec/BPMN/20100524/MODEL");
             IEnumerable<BpmnElement> bpmnElements;
 
             using (var ms = new MemoryStream(Encoding.ASCII.GetBytes(xml)))
@@ -167,59 +219,27 @@ namespace Playground
                 bpmnElements = bpmnProcessReader.Read(bpmnDocument);
             }
 
-            var bpmnProcessSequence = new BpmnProcessSequence(bpmnElements);
+            var bpmnProcessSequence = new Sequence(bpmnElements);
 
-            foreach (var element in bpmnProcessSequence.BpmnSequenceElements)
-            {
-                Console.WriteLine(element.Type);
-            }
+            var bpmnSequenceProcessorBuilder = ISequenceProcessorBuilder
+                .Create<SequenceProcessorBuilder>()
+                .UsingElementHandler(StartEvent.ElementTypeName, new GeneralEventHandler())
+                .UsingElementHandler(EndEvent.ElementTypeName, new GeneralEventHandler())
+                .UsingElementHandler(BpmnSequenceElements.Task.ElementTypeName, new GeneralEventHandler())
+                .UsingElementHandler(ParallelGateway.ElementTypeName, new GeneralEventHandler())
+                .WithBpmnSequence(bpmnProcessSequence);
 
-            Console.ReadKey();
+            var bpmnSequenceProcessor = bpmnSequenceProcessorBuilder.Build<SequenceProcessor>();
+
+            bpmnSequenceProcessor.Start();
         }
     }
 
-    public class DatabaseInputs
+    public class GeneralEventHandler : ISequenceElementHandler
     {
-        public static readonly string ElementTypeName = "databaseInputs";
-        public static readonly XNamespace XNamespace = @"http://tra";
-        public static readonly XName XName = XNamespace.GetName(ElementTypeName);
-
-        public readonly IEnumerable<DatabaseInput> Parameters;
-
-        public DatabaseInputs(IEnumerable<DatabaseInput> parameters)
+        public void Process(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context)
         {
-            Parameters = parameters;
-        }
-
-        public static DatabaseInputs Parse(XElement element)
-        {
-            var parameters = element.Elements(XNamespace.GetName(DatabaseInput.ElementTypeName));
-
-            return new DatabaseInputs(
-                parameters
-                    .Select(s =>
-                    new DatabaseInput(
-                        s.Attribute("table")?.Value ?? string.Empty,
-                        s.Attribute("column")?.Value ?? string.Empty)
-                    )
-            );
-        }
-
-        public class DatabaseInput
-        {
-            public static readonly string ElementTypeName = "databaseInput";
-
-            private readonly string _table;
-            private readonly string _column;
-
-            public string Table { get => _table; }
-            public string Column { get => _column; }
-
-            public DatabaseInput(string table, string column)
-            {
-                _table = table;
-                _column = column;
-            }
+            Console.Out.WriteLine($"{currentElement.Type}-{currentElement.Id} processed");
         }
     }
 }
