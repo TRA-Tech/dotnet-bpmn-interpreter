@@ -4,11 +4,11 @@ using System.Xml.Linq;
 
 namespace TraTech.BpmnInterpreter.Core
 {
-    public class Reader : IReader
+    public class BpmnReader : IBpmnReader
     {
         public readonly XNamespace BpmnNameSpace;
 
-        public Reader(XNamespace bpmnNameSpace)
+        public BpmnReader(XNamespace bpmnNameSpace)
         {
             BpmnNameSpace = bpmnNameSpace;
         }

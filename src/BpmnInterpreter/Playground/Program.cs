@@ -210,7 +210,7 @@ namespace Playground
 
 ";
 
-            var bpmnProcessReader = new Reader("http://www.omg.org/spec/BPMN/20100524/MODEL");
+            var bpmnProcessReader = new BpmnReader("http://www.omg.org/spec/BPMN/20100524/MODEL");
             IEnumerable<BpmnElement> bpmnElements;
 
             using (var ms = new MemoryStream(Encoding.ASCII.GetBytes(xml)))
