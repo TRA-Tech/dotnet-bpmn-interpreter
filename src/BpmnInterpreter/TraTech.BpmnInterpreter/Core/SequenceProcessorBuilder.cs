@@ -1,5 +1,4 @@
 ﻿using TraTech.BpmnInterpreter.Abstractions;
-using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace TraTech.BpmnInterpreter.Core
 {

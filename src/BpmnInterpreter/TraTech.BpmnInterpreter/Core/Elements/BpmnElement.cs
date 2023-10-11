@@ -5,6 +5,9 @@ namespace TraTech.BpmnInterpreter.Core.Elements
 {
     public class BpmnElement
     {
+        public const string ExtensionElementsName = "extensionElements";
+        public const string EventDefinitionName = "EventDefinition";
+
         private readonly string _type;
         private readonly string _id;
         private readonly string? _name;
@@ -16,16 +19,43 @@ namespace TraTech.BpmnInterpreter.Core.Elements
         public string? Name { get { return _name; } }
         public XElement Self { get { return _self; } }
         public XNamespace Namespace { get { return _namespace; } }
-
         public bool HasParent { get { return _self.Parent != null; } }
         public bool HasChildren { get { return _self.HasElements; } }
-        public bool HasExtensionElements { get { return _self.Elements(_namespace.GetName("extensionElements")).Any(); } }
+        public bool HasExtensionElements { get { return _self.Elements(_namespace.GetName(ExtensionElementsName)).Any(); } }
+        public bool HasEventDefinitions
+        {
+            get
+            {
+                return _self
+                    .Elements()
+                    .Any(a => a.Name.LocalName.Contains(
+                        EventDefinitionName,
+                        StringComparison.InvariantCultureIgnoreCase)
+                    );
+            }
+        }
+
         public IEnumerable<XElement> ExtensionElements
         {
             get
             {
                 if (HasExtensionElements)
-                    return _self.Element(_namespace.GetName("extensionElements"))?.Elements() ?? Enumerable.Empty<XElement>();
+                    return _self.Element(_namespace.GetName(ExtensionElementsName))?.Elements() ?? Enumerable.Empty<XElement>();
+
+                return Enumerable.Empty<XElement>();
+            }
+        }
+
+        public IEnumerable<XElement> EventDefinitions
+        {
+            get
+            {
+                if (HasEventDefinitions)
+                    return _self.Elements()
+                    .Where(a => a.Name.LocalName.Contains(
+                        EventDefinitionName,
+                        StringComparison.InvariantCultureIgnoreCase)
+                    );
 
                 return Enumerable.Empty<XElement>();
             }
@@ -38,10 +68,10 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             var methodName = "Parse";
             var fieldName = "ElementTypeName";
 
-            var extensionElementTypeFieldInfo = type.GetField(fieldName, BindingFlags.Public | BindingFlags.Static)
+            var extensionElementTypeNameFieldInfo = type.GetField(fieldName, BindingFlags.Public | BindingFlags.Static)
                 ?? throw new Exception($"(field){fieldName} could not found in the (class){type.Name}");
 
-            var extensionElementTypeName = (string?)extensionElementTypeFieldInfo.GetValue(null)
+            var extensionElementTypeName = (string?)extensionElementTypeNameFieldInfo.GetValue(null)
                 ?? throw new Exception($"(field){fieldName} could not get the value");
 
             var extensionElement = ExtensionElements.First(f => f.Name.LocalName == extensionElementTypeName)
@@ -50,7 +80,36 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             var method = type.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static, new[] { typeof(XElement) })
                 ?? throw new Exception($"(method){methodName} could not found in the (class){type.Name}");
 
-            var result = (T)method!.Invoke(null, new object?[] { extensionElement })!;
+            var result = method!.Invoke(null, new object?[] { extensionElement })!;
+
+            if (result is T resultAsT)
+            {
+                return resultAsT;
+            }
+
+            throw new InvalidOperationException($"Failed to invoke the '{methodName}' method");
+        }
+
+        public T ParseEventDefinition<T>()
+            where T : class
+        {
+            var type = typeof(T);
+            var methodName = "Parse";
+            var fieldName = "EventDefinitionTypeName";
+
+            var eventDefinitionTypeNameFieldInfo = type.GetField(fieldName, BindingFlags.Public | BindingFlags.Static)
+                ?? throw new Exception($"(field){fieldName} could not found in the (class){type.Name}");
+
+            var eventDefinitionTypeName = (string?)eventDefinitionTypeNameFieldInfo.GetValue(null)
+                ?? throw new Exception($"(field){fieldName} could not get the value");
+
+            var eventDefinitionElement = EventDefinitions.First(f => f.Name.LocalName == eventDefinitionTypeName)
+                ?? throw new Exception($"{eventDefinitionTypeName} could not found in {nameof(EventDefinitions)}");
+
+            var method = type.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static, new[] { typeof(XElement) })
+                ?? throw new Exception($"(method){methodName} could not found in the (class){type.Name}");
+
+            var result = (T)method!.Invoke(null, new object?[] { eventDefinitionElement })!;
 
             return result;
         }
@@ -62,17 +121,29 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             _id = _self.Attribute("id")?.Value ?? throw new InvalidOperationException("self has no id attribute");
             _name = _self.Attribute("name")?.Value;
             _namespace = _self.Name.Namespace;
-
         }
 
-        public bool HasExtensionElementOf(XName extensionElementName)
+        public bool HasExtensionElementOf(string extensionElementName)
         {
-            return ExtensionElements.Any(a => a.Name == extensionElementName);
+            var name = Namespace.GetName(extensionElementName);
+            return ExtensionElements.Any(a => a.Name == name);
         }
 
         public bool HasExtensionElementOf(XNamespace xNamespace, string extensionElementName)
         {
             var name = xNamespace.GetName(extensionElementName);
+            return ExtensionElements.Any(a => a.Name == name);
+        }
+
+        public bool HasEventDefinitionOf(string eventDefinitionName)
+        {
+            var name = Namespace.GetName(eventDefinitionName);
+            return EventDefinitions.Any(a => a.Name == name);
+        }
+
+        public bool HasEventDefinitionOf(XNamespace xNamespace, string eventDefinitionName)
+        {
+            var name = xNamespace.GetName(eventDefinitionName);
             return ExtensionElements.Any(a => a.Name == name);
         }
 
