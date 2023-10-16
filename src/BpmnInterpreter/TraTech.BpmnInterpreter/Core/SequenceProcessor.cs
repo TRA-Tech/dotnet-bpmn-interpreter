@@ -17,7 +17,7 @@ namespace TraTech.BpmnInterpreter.Core
         public SequenceProcessor(BpmnSequenceProcessorData bpmnSequenceProcessorBuilderData)
             : base(bpmnSequenceProcessorBuilderData)
         {
-            _handlerContext = new SequenceElementHandlerContext(this);
+            _handlerContext = new SequenceElementHandlerContext();
 
             if (bpmnSequenceProcessorBuilderData.BpmnSequence is not null)
             {

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Playground.ElementHandlers;
+using System.Text;
 using System.Xml.Linq;
 using TraTech.BpmnInterpreter.Abstractions;
 using TraTech.BpmnInterpreter.Core;
@@ -9,6 +10,14 @@ using BpmnSequenceElements = TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace Playground
 {
+    public class Data
+    {
+        public string Name { get; set; }
+        public int Number { get; set; }
+        public string Description { get; set; }
+
+    }
+
     internal class Program
     {
         static void Main(string[] args)
@@ -19,24 +28,23 @@ namespace Playground
   <semantic:message id=""_1275940932433"" />
   <semantic:message id=""_1275940932198"" />
   <semantic:process id=""Process_0pbbn3n"">
-    <semantic:startEvent id=""Event_0yh5iyc"" />
-    <semantic:startEvent id=""Event_10durh9"">
-      <semantic:messageEventDefinition id=""MessageEventDefinition_1yt1l3a"" />
+    <semantic:startEvent id=""Event_1rfnzok"" name=""START"">
+      <semantic:outgoing>Flow_0kszezh</semantic:outgoing>
     </semantic:startEvent>
-    <semantic:startEvent id=""Event_07a52kb"">
-      <semantic:timerEventDefinition id=""TimerEventDefinition_11hhiqh"" />
-    </semantic:startEvent>
-    <semantic:startEvent id=""Event_02c4dmy"">
-      <semantic:conditionalEventDefinition id=""ConditionalEventDefinition_03qoudr"">
-        <semantic:condition xsi:type=""semantic:tFormalExpression"" />
-      </semantic:conditionalEventDefinition>
-    </semantic:startEvent>
-    <semantic:startEvent id=""Event_0q94alq"">
-      <semantic:signalEventDefinition id=""SignalEventDefinition_0a6vsz8"" />
-    </semantic:startEvent>
+    <semantic:task id=""Activity_17vne42"">
+      <semantic:extensionElements>
+        <tra:selects dataSource="""" variableName="""" />
+      </semantic:extensionElements>
+      <semantic:incoming>Flow_0kszezh</semantic:incoming>
+      <semantic:outgoing>Flow_1nvb38w</semantic:outgoing>
+    </semantic:task>
+    <semantic:endEvent id=""Event_1y9un6p"">
+      <semantic:incoming>Flow_1nvb38w</semantic:incoming>
+    </semantic:endEvent>
+    <semantic:sequenceFlow id=""Flow_0kszezh"" sourceRef=""Event_1rfnzok"" targetRef=""Activity_17vne42"" />
+    <semantic:sequenceFlow id=""Flow_1nvb38w"" sourceRef=""Activity_17vne42"" targetRef=""Event_1y9un6p"" />
   </semantic:process>
 </semantic:definitions>
-
 
 ";
 
@@ -49,28 +57,17 @@ namespace Playground
                 bpmnElements = bpmnProcessReader.Read(bpmnDocument);
             }
 
+            var sequence = new Sequence(bpmnElements);
 
-            foreach (var element in bpmnElements.Where(f => f.Type == StartEvent.ElementTypeName))
-            {
-                Console.Out.Write("element.HasEventDefinitions: ");
-                Console.Out.WriteLine(element.HasEventDefinitions);
+            var sequenceProcessor = ISequenceProcessorBuilder
+                .Create<SequenceProcessorBuilder>()
+                .UsingElementHandler(StartEvent.ElementTypeName, new StartEventHandler())
+                .UsingElementHandler(BpmnSequenceElements.Task.ElementTypeName, new TaskHandler())
+                .UsingElementHandler(EndEvent.ElementTypeName, new EndEventHandler())
+                .WithBpmnSequence(sequence)
+                .Build<SequenceProcessor>();
 
-                Console.Out.Write("element.HasEventDefinitionOf(TimerEventDefinition.EventDefinitionTypeName): ");
-                Console.Out.WriteLine(element.HasEventDefinitionOf(TimerEventDefinition.EventDefinitionTypeName));
-
-                foreach (var eventDefinition in element.EventDefinitions)
-                    Console.Out.Write(eventDefinition.Name.LocalName + ", ");
-                Console.Out.WriteLine();
-
-                if (element.HasEventDefinitionOf(TimerEventDefinition.EventDefinitionTypeName))
-                {
-                    var timerEventDefinition = element.ParseEventDefinition<TimerEventDefinition>();
-
-                }
-                Console.Out.WriteLine();
-                Console.Out.WriteLine("------------------------------------");
-                Console.Out.WriteLine();
-            }
+            sequenceProcessor.Start();
         }
     }
 }
