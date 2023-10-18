@@ -6,13 +6,16 @@ namespace TraTech.BpmnInterpreter.Core.Elements
     {
         public static readonly string ElementTypeName = "dataInputAssociation";
 
-        public string SourceRef { get; private set; }
-        public string TargetRef { get; private set; }
+        private readonly string sourceRef = null!;
+        private readonly string targetRef = null!;
+
+        public string SourceRef { get => sourceRef; }
+        public string TargetRef { get => targetRef; }
 
         public DataInputAssociation(XElement self) : base(self)
         {
-            SourceRef = self.Element(Namespace.GetName("sourceRef"))?.Value ?? throw new InvalidOperationException("self has no sourceRef element");
-            TargetRef = self.Element(Namespace.GetName("targetRef"))?.Value ?? throw new InvalidOperationException("self has no targetRef element");
+            sourceRef = self.Element(Namespace.GetName(nameof(sourceRef)))?.Value ?? throw new InvalidOperationException($"self has no {nameof(sourceRef)} element");
+            targetRef = self.Element(Namespace.GetName(nameof(targetRef)))?.Value ?? throw new InvalidOperationException($"self has no {nameof(targetRef)} element");
         }
     }
 }

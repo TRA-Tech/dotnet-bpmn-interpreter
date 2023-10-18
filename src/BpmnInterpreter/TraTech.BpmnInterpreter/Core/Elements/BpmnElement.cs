@@ -34,7 +34,13 @@ namespace TraTech.BpmnInterpreter.Core.Elements
                     );
             }
         }
-
+        public IEnumerable<XElement> Children
+        {
+            get
+            {
+                return _self.Elements();
+            }
+        }
         public IEnumerable<XElement> ExtensionElements
         {
             get
@@ -45,7 +51,6 @@ namespace TraTech.BpmnInterpreter.Core.Elements
                 return Enumerable.Empty<XElement>();
             }
         }
-
         public IEnumerable<XElement> EventDefinitions
         {
             get
@@ -59,6 +64,15 @@ namespace TraTech.BpmnInterpreter.Core.Elements
 
                 return Enumerable.Empty<XElement>();
             }
+        }
+
+        public BpmnElement(XElement self)
+        {
+            _self = self ?? throw new ArgumentNullException(nameof(self));
+            _type = _self.Name.LocalName;
+            _id = _self.Attribute("id")?.Value ?? throw new InvalidOperationException("self has no id attribute");
+            _name = _self.Attribute("name")?.Value;
+            _namespace = _self.Name.Namespace;
         }
 
         public T ParseExtensionElement<T>()
@@ -114,37 +128,26 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             return result;
         }
 
-        public BpmnElement(XElement self)
+        public bool HasExtensionElementOf(string extensionElementName, XNamespace? xNamespace = null)
         {
-            _self = self ?? throw new ArgumentNullException(nameof(self));
-            _type = _self.Name.LocalName;
-            _id = _self.Attribute("id")?.Value ?? throw new InvalidOperationException("self has no id attribute");
-            _name = _self.Attribute("name")?.Value;
-            _namespace = _self.Name.Namespace;
-        }
-
-        public bool HasExtensionElementOf(string extensionElementName)
-        {
-            var name = Namespace.GetName(extensionElementName);
+            var nameSpace = xNamespace ?? _namespace;
+            var name = nameSpace.GetName(extensionElementName);
             return ExtensionElements.Any(a => a.Name == name);
         }
 
-        public bool HasExtensionElementOf(XNamespace xNamespace, string extensionElementName)
+        public bool HasEventDefinitionOf(string eventDefinitionName, XNamespace? xNamespace = null)
         {
-            var name = xNamespace.GetName(extensionElementName);
-            return ExtensionElements.Any(a => a.Name == name);
-        }
-
-        public bool HasEventDefinitionOf(string eventDefinitionName)
-        {
-            var name = Namespace.GetName(eventDefinitionName);
+            var nameSpace = xNamespace ?? _namespace;
+            var name = nameSpace.GetName(eventDefinitionName);
             return EventDefinitions.Any(a => a.Name == name);
         }
 
-        public bool HasEventDefinitionOf(XNamespace xNamespace, string eventDefinitionName)
+        public bool HasChildOf(string childType, XNamespace? xNamespace = null)
         {
-            var name = xNamespace.GetName(eventDefinitionName);
-            return ExtensionElements.Any(a => a.Name == name);
+            if (!HasChildren) return false;
+            var nameSpace = xNamespace ?? _namespace;
+            var name = nameSpace.GetName(childType);
+            return Self.Elements(name).Any();
         }
 
         public override bool Equals(object? obj)
