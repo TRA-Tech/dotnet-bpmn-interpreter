@@ -7,16 +7,16 @@ namespace Playground.ElementHandlers
     {
         public void Process(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context)
         {
-            context.SetData("number", 10);
-            context.SetData("object", new Data()
+            context.DataMap.Set("number", 10);
+            context.DataMap.Set("object", new Data()
             {
                 Name = "Name1",
                 Description = "Description1",
                 Number = 1,
             });
 
-            context.TrySetData("number", 10);
-            context.TrySetData("value", 10);
+            context.DataMap.TrySet("number", 10);
+            context.DataMap.TrySet("value", 10);
             Console.Out.WriteLine($"{currentElement.Id} - Processed! from {nameof(StartEventHandler)}");
         }
     }

@@ -3,13 +3,11 @@ using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace Playground.ElementHandlers
 {
-    public class EndEventHandler : ISequenceElementHandler
+    public class DefaultElementHandler : ISequenceElementHandler
     {
         public void Process(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context)
         {
-            var data = context.DataMap.Get<Data>("object");
-
-            Console.Out.WriteLine($"{currentElement.Id} - Processed data.Number is {data.Number}! from {nameof(EndEventHandler)}");
+            Console.Out.WriteLine($"{currentElement.Id} - Processed type is {currentElement.Type}! from {GetType().Name}");
         }
     }
 }

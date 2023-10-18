@@ -12,19 +12,22 @@ namespace TraTech.BpmnInterpreter.Core
         private readonly Dictionary<string, ProcessorElementState> _elementStateDict = new();
         private readonly LinkedList<BpmnSequenceElement> _elementsToBeProcessed = new();
         private LinkedListNode<BpmnSequenceElement>? _iterator;
-
         private readonly SequenceElementHandlerContext _handlerContext;
+        private bool _stopFlag = false;
+
+        public override ISequenceElementHandlerContext SequenceElementHandlerContext => _handlerContext;
+
         public SequenceProcessor(BpmnSequenceProcessorData bpmnSequenceProcessorBuilderData)
             : base(bpmnSequenceProcessorBuilderData)
         {
-            _handlerContext = new SequenceElementHandlerContext();
+            if (bpmnSequenceProcessorBuilderData.DataMap is null) throw new ArgumentException($"{nameof(bpmnSequenceProcessorBuilderData.DataMap)} can not be null!");
+            if (bpmnSequenceProcessorBuilderData.BpmnSequence is null) throw new ArgumentException($"{nameof(bpmnSequenceProcessorBuilderData.BpmnSequence)} can not be null!");
 
-            if (bpmnSequenceProcessorBuilderData.BpmnSequence is not null)
+            _handlerContext = new SequenceElementHandlerContext(bpmnSequenceProcessorBuilderData.DataMap, bpmnSequenceProcessorBuilderData.BpmnSequence, this);
+
+            foreach (var element in bpmnSequenceProcessorBuilderData.BpmnSequence.BpmnSequenceElements)
             {
-                foreach (var element in bpmnSequenceProcessorBuilderData.BpmnSequence.BpmnSequenceElements)
-                {
-                    _elementStateDict.Add(element.Id, ProcessorElementState.Ready);
-                }
+                _elementStateDict.Add(element.Id, ProcessorElementState.Ready);
             }
         }
 
@@ -48,20 +51,20 @@ namespace TraTech.BpmnInterpreter.Core
                 _elementsToBeProcessed.AddLast(startEvent);
             }
 
-            var elementHandlerContext = GetHandlerContext();
-
             _iterator = _elementsToBeProcessed.First;
             while (_iterator != null)
             {
                 var currentElement = _iterator.Value;
                 var currentElementState = _elementStateDict[currentElement.Id];
 
-                var elementHandler = data.ElementHandlerMap[currentElement.Type];
+
+                var elementHandler = GetElementHandler(currentElement.Type);
+
                 if (currentElement
                     .PreviousElements
                     .All(a => _elementStateDict[a.Id] == ProcessorElementState.Processed))
                 {
-                    elementHandler.Process(currentElement, elementHandlerContext);
+                    elementHandler.Process(currentElement, SequenceElementHandlerContext);
                     foreach (var nextElement in currentElement.NextElements)
                     {
                         var nextElementState = _elementStateDict[nextElement.Id];
@@ -94,12 +97,33 @@ namespace TraTech.BpmnInterpreter.Core
                         _iterator = _iterator.Next;
                     }
                 }
+
+                if (_stopFlag) break;
             }
         }
 
-        public override ISequenceElementHandlerContext GetHandlerContext()
+        public override void Stop()
         {
-            return _handlerContext;
+            _stopFlag = true;
+        }
+
+        public ISequenceElementHandler GetElementHandler(string elementType)
+        {
+            ISequenceElementHandler? elementHandler;
+            if (data.ElementHandlerMap.ContainsKey(elementType))
+            {
+                elementHandler = data.ElementHandlerMap[elementType];
+            }
+            else
+            {
+                elementHandler = data.DefaultElementHandler;
+            }
+
+            if (elementHandler is null)
+            {
+                throw new KeyNotFoundException($"ElementHandler with type '{elementType}' could not found in the {nameof(data.ElementHandlerMap)} and no DefaultElementHandler provided!");
+            }
+            return elementHandler;
         }
     }
 }

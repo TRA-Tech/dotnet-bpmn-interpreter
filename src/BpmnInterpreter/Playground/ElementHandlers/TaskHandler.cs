@@ -1,4 +1,5 @@
 ﻿using TraTech.BpmnInterpreter.Abstractions;
+using TraTech.BpmnInterpreter.Core.Elements;
 using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace Playground.ElementHandlers
@@ -7,10 +8,10 @@ namespace Playground.ElementHandlers
     {
         public void Process(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context)
         {
-            var data = context.GetData<Data>("object");
+            var data = context.DataMap.Get<Data>("object");
             data.Number++;
 
-            var result = context.TryGetData<Data>("object", out var data2);
+            var result = context.DataMap.TryGet<Data>("object", out var data2);
             if (data2 is not null)
                 data2.Number++;
 

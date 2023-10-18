@@ -39,6 +39,7 @@ namespace Playground
         </tra:selects>
       </semantic:extensionElements>
       <semantic:incoming>Flow_0khzydu</semantic:incoming>
+      <semantic:incoming>Flow_13p9eup</semantic:incoming>
       <semantic:outgoing>Flow_0r1npi2</semantic:outgoing>
     </semantic:task>
     <semantic:dataStoreReference id=""DataStoreReference_088alvo"" name=""Kredi"" tra:tableName=""Kredi"" />
@@ -65,6 +66,10 @@ namespace Playground
       </semantic:dataInputAssociation>
     </semantic:scriptTask>
     <semantic:sequenceFlow id=""Flow_0khzydu"" sourceRef=""Activity_1di90xd"" targetRef=""Activity_1kqp03h"" />
+    <semantic:startEvent id=""Event_09jebyu"">
+      <semantic:outgoing>Flow_13p9eup</semantic:outgoing>
+    </semantic:startEvent>
+    <semantic:sequenceFlow id=""Flow_13p9eup"" sourceRef=""Event_09jebyu"" targetRef=""Activity_1kqp03h"" />
   </semantic:process>
 </semantic:definitions>
 
@@ -90,8 +95,10 @@ namespace Playground
             var sequenceProcessor = ISequenceProcessorBuilder
                 .Create<SequenceProcessorBuilder>()
                 .UsingElementHandler(StartEvent.ElementTypeName, new StartEventHandler())
+                .UsingElementHandler(ScriptTask.ElementTypeName, new ScriptTaskHandler())
                 .UsingElementHandler(BpmnSequenceElements.Task.ElementTypeName, new TaskHandler())
                 .UsingElementHandler(EndEvent.ElementTypeName, new EndEventHandler())
+                .WithDefaultElementHandler(new DefaultElementHandler())
                 .WithBpmnSequence(sequence)
                 .Build<SequenceProcessor>();
 

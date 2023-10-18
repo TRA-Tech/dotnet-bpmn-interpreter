@@ -5,33 +5,37 @@ namespace TraTech.BpmnInterpreter.Abstractions
 {
     public abstract class BaseSequence
     {
-        protected ICollection<BpmnSequenceElement> _bpmnSequenceElements;
-        public IEnumerable<BpmnSequenceElement> BpmnSequenceElements { get => _bpmnSequenceElements; }
+        protected ICollection<BpmnSequenceElement> bpmnSequenceElements;
+        public IEnumerable<BpmnSequenceElement> BpmnSequenceElements { get => bpmnSequenceElements; }
+
+        protected IEnumerable<BpmnElement> bpmnElements;
+        public IEnumerable<BpmnElement> BpmnElements { get => bpmnElements; }
 
         public IEnumerable<StartEvent> StartEventElements
         {
-            get => _bpmnSequenceElements
+            get => bpmnSequenceElements
                 .Where(w => w.Type == StartEvent.ElementTypeName)
                 .Select(s => new StartEvent(s.Self, s.NextElements));
         }
 
         public IEnumerable<EndEvent> EndEventElements
         {
-            get => _bpmnSequenceElements
+            get => bpmnSequenceElements
                 .Where(w => w.Type == EndEvent.ElementTypeName)
                 .Select(s => new EndEvent(s.Self, s.PreviousElements));
         }
 
-        protected ICollection<SequenceFlow> _sequenceFlowElements;
-        public IEnumerable<SequenceFlow> SequenceFlowElements { get => _sequenceFlowElements; }
+        protected ICollection<SequenceFlow> sequenceFlowElements;
+        public IEnumerable<SequenceFlow> SequenceFlowElements { get => sequenceFlowElements; }
 
-        public bool HasAStart { get => _bpmnSequenceElements.Any(a => a.Type == StartEvent.ElementTypeName); }
-        public bool HasAnEnd { get => _bpmnSequenceElements.Any(a => a.Type == EndEvent.ElementTypeName); }
+        public bool HasAStart { get => bpmnSequenceElements.Any(a => a.Type == StartEvent.ElementTypeName); }
+        public bool HasAnEnd { get => bpmnSequenceElements.Any(a => a.Type == EndEvent.ElementTypeName); }
 
         public BaseSequence(IEnumerable<BpmnElement>? bpmnElements = null)
         {
-            _bpmnSequenceElements = new List<BpmnSequenceElement>();
-            _sequenceFlowElements = new List<SequenceFlow>();
+            bpmnSequenceElements = new List<BpmnSequenceElement>();
+            sequenceFlowElements = new List<SequenceFlow>();
+            this.bpmnElements = bpmnElements ?? Enumerable.Empty<BpmnElement>();
 
             if (bpmnElements != null)
             {
@@ -41,18 +45,19 @@ namespace TraTech.BpmnInterpreter.Abstractions
 
         public virtual void LoadSequence(IEnumerable<BpmnElement> bpmnElements)
         {
-            SetSequenceFlowElements(bpmnElements);
-            SetBpmnSequenceElements(bpmnElements);
+            this.bpmnElements = bpmnElements;
+            SetSequenceFlowElements();
+            SetBpmnSequenceElements();
         }
 
-        protected virtual void SetSequenceFlowElements(IEnumerable<BpmnElement> bpmnElements)
+        protected virtual void SetSequenceFlowElements()
         {
-            _sequenceFlowElements = bpmnElements
+            sequenceFlowElements = bpmnElements
                 .Where(element => element.Type == SequenceFlow.ElementTypeName)
                 .Select(s => new SequenceFlow(s.Self))
                 .ToList();
         }
 
-        protected abstract void SetBpmnSequenceElements(IEnumerable<BpmnElement> bpmnElements);
+        protected abstract void SetBpmnSequenceElements();
     }
 }

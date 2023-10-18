@@ -15,7 +15,11 @@
 
         ISequenceProcessorBuilder UsingElementHandler(string elementTypeName, ISequenceElementHandler bpmnSequenceElementHandler);
 
+        ISequenceProcessorBuilder WithDefaultElementHandler(ISequenceElementHandler bpmnSequenceElementHandler);
+
         ISequenceProcessorBuilder WithBpmnSequence(BaseSequence bpmnSequence);
+
+        ISequenceProcessorBuilder WithDataMap(IDataMap dataMap);
 
         TProcessor Build<TProcessor>() where TProcessor : BaseSequenceProcessor;
 

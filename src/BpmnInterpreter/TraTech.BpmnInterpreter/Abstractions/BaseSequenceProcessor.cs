@@ -5,7 +5,7 @@ namespace TraTech.BpmnInterpreter.Abstractions
     public abstract class BaseSequenceProcessor
     {
         protected readonly BpmnSequenceProcessorData data;
-
+        public abstract ISequenceElementHandlerContext SequenceElementHandlerContext { get; }
         public BaseSequenceProcessor(BpmnSequenceProcessorData bpmnSequenceProcessorBuilderData)
         {
             data = bpmnSequenceProcessorBuilderData;
@@ -33,7 +33,6 @@ namespace TraTech.BpmnInterpreter.Abstractions
         }
 
         public abstract void Start();
-
-        public abstract ISequenceElementHandlerContext GetHandlerContext();
+        public abstract void Stop();
     }
 }

@@ -7,5 +7,9 @@ namespace TraTech.BpmnInterpreter.Core
         public BaseSequence? BpmnSequence;
 
         public readonly Dictionary<string, ISequenceElementHandler> ElementHandlerMap = new();
+
+        public ISequenceElementHandler? DefaultElementHandler;
+
+        public IDataMap? DataMap;
     }
 }

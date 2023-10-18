@@ -6,7 +6,10 @@ namespace TraTech.BpmnInterpreter.Core
     {
         private readonly BpmnSequenceProcessorData _data = new();
 
-        public SequenceProcessorBuilder() { }
+        public SequenceProcessorBuilder()
+        {
+            _data.DataMap = new DataMap();
+        }
 
         public SequenceProcessorBuilder(BpmnSequenceProcessorData data)
         {
@@ -41,6 +44,18 @@ namespace TraTech.BpmnInterpreter.Core
         public ISequenceProcessorBuilder WithBpmnSequence(BaseSequence bpmnSequence)
         {
             _data.BpmnSequence = bpmnSequence;
+            return this;
+        }
+
+        public ISequenceProcessorBuilder WithDataMap(IDataMap dataMap)
+        {
+            _data.DataMap = dataMap;
+            return this;
+        }
+
+        public ISequenceProcessorBuilder WithDefaultElementHandler(ISequenceElementHandler bpmnSequenceElementHandler)
+        {
+            _data.DefaultElementHandler = bpmnSequenceElementHandler;
             return this;
         }
     }
