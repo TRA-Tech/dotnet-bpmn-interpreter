@@ -64,7 +64,12 @@ namespace TraTech.BpmnInterpreter.Core
                     .PreviousElements
                     .All(a => _elementStateDict[a.Id] == ProcessorElementState.Processed))
                 {
-                    elementHandler.Process(currentElement, SequenceElementHandlerContext);
+                    if (_elementStateDict[currentElement.Id] != ProcessorElementState.Processed)
+                    {
+                        elementHandler.Process(currentElement, SequenceElementHandlerContext);
+                        _elementStateDict[currentElement.Id] = ProcessorElementState.Processed;
+                    }
+
                     foreach (var nextElement in currentElement.NextElements)
                     {
                         var nextElementState = _elementStateDict[nextElement.Id];
@@ -73,7 +78,6 @@ namespace TraTech.BpmnInterpreter.Core
                     }
                     _iterator = _iterator.Next;
                     _elementsToBeProcessed.Remove(currentElement);
-                    _elementStateDict[currentElement.Id] = ProcessorElementState.Processed;
                 }
                 else
                 {
