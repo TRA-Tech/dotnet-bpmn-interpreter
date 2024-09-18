@@ -1,5 +1,4 @@
 ﻿using TraTech.BpmnInterpreter.Abstractions;
-using TraTech.BpmnInterpreter.Core.Elements;
 using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace Playground.ElementHandlers
@@ -16,6 +15,7 @@ namespace Playground.ElementHandlers
                 data2.Number++;
 
             Console.Out.WriteLine($"{currentElement.Id} - Processed! from {nameof(TaskHandler)}");
+
         }
     }
 }

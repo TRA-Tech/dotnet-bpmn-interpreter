@@ -76,7 +76,8 @@ namespace TraTech.BpmnInterpreter.Core
                         if (nextElementState == ProcessorElementState.Ready)
                             _elementsToBeProcessed.AddLast(nextElement);
                     }
-                    _iterator = _iterator.Next;
+                    _iterator = _iterator.Next is null ? _iterator.Previous : _iterator.Next;
+
                     _elementsToBeProcessed.Remove(currentElement);
                 }
                 else
