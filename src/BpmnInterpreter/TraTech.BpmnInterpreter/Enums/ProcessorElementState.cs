@@ -5,6 +5,6 @@
         Ready,
         Waiting,
         Processed,
-        Deleted,
+        DontProcess,
     }
 }

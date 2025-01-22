@@ -9,7 +9,7 @@ namespace Playground.ElementHandlers
         {
             var data = context.DataMap.Get<Data>("object");
 
-            Console.Out.WriteLine($"{currentElement.Id} - Processed data.Number is {data.Number}! from {nameof(EndEventHandler)}");
+            Console.Out.WriteLine($"{currentElement.Name} - Processed data.Number is {data.Number}! from {nameof(EndEventHandler)}");
         }
     }
 }

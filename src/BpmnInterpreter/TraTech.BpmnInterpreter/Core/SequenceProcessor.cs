@@ -60,7 +60,7 @@ namespace TraTech.BpmnInterpreter.Core
                 var currentElement = _iterator.Value;
                 var currentElementState = _elementStateDict[currentElement.Id];
 
-
+                var name = currentElement.Name;
                 var elementHandler = GetElementHandler(currentElement.Type);
 
                 if (currentElement
@@ -71,25 +71,27 @@ namespace TraTech.BpmnInterpreter.Core
                 }
                 else
                 {
-                    var deletedPreviousElements = currentElement
-                        .PreviousElements
-                        .Any(w => _elementStateDict[w.Id] == ProcessorElementState.Processed) &&
-                        currentElement
-                        .PreviousElements
-                        .Any(w => _elementStateDict[w.Id] == ProcessorElementState.Deleted);
-
-                    if (deletedPreviousElements)
+                    if (currentElement.PreviousElements.All(w => _elementStateDict[w.Id] == ProcessorElementState.DontProcess))
                     {
-                        ProcessElement(currentElement, elementHandler);
+                        _elementStateDict[currentElement.Id] = ProcessorElementState.DontProcess;
+                        _iterator = _iterator.Next;
                     }
+                    else if (
+                        currentElement.PreviousElements.All(w =>
+                            _elementStateDict[w.Id] == ProcessorElementState.DontProcess ||
+                            _elementStateDict[w.Id] == ProcessorElementState.Processed) &&
+                        currentElement.PreviousElements.Any(w => _elementStateDict[w.Id] == ProcessorElementState.DontProcess) &&
+                        currentElement.PreviousElements.Any(w => _elementStateDict[w.Id] == ProcessorElementState.Processed)
+                    )
+                        ProcessElement(currentElement, elementHandler);
                     else
                     {
                         _elementStateDict[currentElement.Id] = ProcessorElementState.Waiting;
 
                         var previousElements = currentElement
-                            .PreviousElements
-                            .Where(w => _elementStateDict[w.Id] == ProcessorElementState.Ready)
-                            .Where(w => !_elementsToBeProcessed.Contains(w));
+                                .PreviousElements
+                                .Where(w => _elementStateDict[w.Id] == ProcessorElementState.Ready);
+                                //.Where(w => !_elementsToBeProcessed.Contains(w));
 
                         if (previousElements.Any())
                         {
@@ -123,15 +125,22 @@ namespace TraTech.BpmnInterpreter.Core
             var currentElement = _iterator.Value;
 
             // Remove all existing next elements from the current element
-            var removalElements = currentElement.NextElements.Except(new[] { nextElement }).ToList();
+            var removalElements = currentElement.NextElements
+                .Except(new[] { nextElement })
+                .Where(w => w.Type != EndEvent.ElementTypeName && w.PreviousElements.Count() == 1)
+                .ToList();
 
             foreach (var removalElement in removalElements)
             {
                 currentElement.NextElements.Remove(removalElement);
                 if (_elementStateDict.ContainsKey(removalElement.Id))
                 {
-                    _elementStateDict[removalElement.Id] = ProcessorElementState.Deleted;
-                    MarkNextElementsAsDeleted(removalElement);
+                    _elementStateDict[removalElement.Id] = ProcessorElementState.DontProcess;
+                    if (_elementsToBeProcessed.Contains(removalElement))
+                    {
+                        _elementsToBeProcessed.Remove(removalElement);
+                    }
+                    MarkNextElementsAsDontProcess(removalElement);
                 }
 
             }
@@ -148,22 +157,19 @@ namespace TraTech.BpmnInterpreter.Core
                 nextElement.PreviousElements.Add(currentElement);
             }
 
-            // Update the processing queue if needed
-            if (!_elementsToBeProcessed.Contains(nextElement))
-            {
-                _elementsToBeProcessed.AddLast(nextElement);
-            }
         }
-        private void MarkNextElementsAsDeleted(BpmnSequenceElement element)
+        private void MarkNextElementsAsDontProcess(BpmnSequenceElement element)
         {
             foreach (var next in element.NextElements.ToList())
             {
-                if (_elementStateDict.ContainsKey(next.Id) 
-                    && next.PreviousElements.Any(prev => _elementStateDict[prev.Id] == ProcessorElementState.Processed) 
-                    && next.PreviousElements.Any(w => _elementStateDict[w.Id] == ProcessorElementState.Deleted))
+                if (_elementStateDict.ContainsKey(next.Id) && next.PreviousElements.All(w => _elementStateDict[w.Id] == ProcessorElementState.DontProcess))
                 {
-                    _elementStateDict[next.Id] = ProcessorElementState.Deleted;
-                    MarkNextElementsAsDeleted(next);
+                    _elementStateDict[next.Id] = ProcessorElementState.DontProcess;
+                    if (_elementsToBeProcessed.Contains(next))
+                    {
+                        _elementsToBeProcessed.Remove(next);
+                    }
+                    MarkNextElementsAsDontProcess(next);
                 }
             }
         }

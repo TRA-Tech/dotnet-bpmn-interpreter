@@ -12,9 +12,9 @@ namespace Playground.ElementHandlers
     {
         public void Process(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context)
         {
-            var data = currentElement.NextElements.FirstOrDefault();
+            var data = currentElement.NextElements.LastOrDefault();
             context.SequenceProcessor.SetNextElement(data);
-            Console.Out.WriteLine($"{currentElement.Id} - Processed! from {nameof(StartEventHandler)}");
+            Console.Out.WriteLine($"{currentElement.Name} - Processed! from {nameof(ExclusiveGatewayHandler)}");
         }
     }
 }

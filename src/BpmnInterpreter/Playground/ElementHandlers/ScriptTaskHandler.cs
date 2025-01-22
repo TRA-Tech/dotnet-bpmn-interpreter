@@ -12,7 +12,7 @@ namespace Playground.ElementHandlers
 
             var dia = new DataInputAssociation(diaXElement);
 
-            Console.Out.WriteLine($"{currentElement.Id} - Processed! from {GetType().Name}");
+            Console.Out.WriteLine($"{currentElement.Name} - Processed! from {GetType().Name}");
         }
     }
 }

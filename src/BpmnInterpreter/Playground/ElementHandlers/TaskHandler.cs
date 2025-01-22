@@ -14,7 +14,7 @@ namespace Playground.ElementHandlers
             if (data2 is not null)
                 data2.Number++;
 
-            Console.Out.WriteLine($"{currentElement.Id} - Processed! from {nameof(TaskHandler)}");
+            Console.Out.WriteLine($"{currentElement.Name} - Processed! from {nameof(TaskHandler)}");
 
         }
     }

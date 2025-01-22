@@ -17,7 +17,7 @@ namespace Playground.ElementHandlers
 
             context.DataMap.TrySet("number", 10);
             context.DataMap.TrySet("value", 10);
-            Console.Out.WriteLine($"{currentElement.Id} - Processed! from {nameof(StartEventHandler)}");
+            Console.Out.WriteLine($"{currentElement.Name} - Processed! from {nameof(StartEventHandler)}");
         }
     }
 }
