@@ -1,4 +1,5 @@
 ﻿using TraTech.BpmnInterpreter.Core;
+using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace TraTech.BpmnInterpreter.Abstractions
 {
@@ -33,6 +34,7 @@ namespace TraTech.BpmnInterpreter.Abstractions
         }
 
         public abstract void Start();
+        public abstract void SetNextElement(BpmnSequenceElement nextElement);
         public abstract void Stop();
     }
 }

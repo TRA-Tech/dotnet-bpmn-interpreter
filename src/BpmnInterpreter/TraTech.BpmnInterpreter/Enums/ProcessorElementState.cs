@@ -4,6 +4,7 @@
     {
         Ready,
         Waiting,
-        Processed
+        Processed,
+        Deleted,
     }
 }
