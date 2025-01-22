@@ -1,9 +1,12 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using TraTech.BpmnInterpreter.Abstractions;
+using TraTech.BpmnInterpreter.Core.Elements;
 using TraTech.BpmnInterpreter.Core.SequenceElements;
 using TraTech.BpmnInterpreter.Enums;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TraTech.BpmnInterpreter.Core
 {
@@ -57,49 +60,51 @@ namespace TraTech.BpmnInterpreter.Core
                 var currentElement = _iterator.Value;
                 var currentElementState = _elementStateDict[currentElement.Id];
 
-
+                var name = currentElement.Name;
                 var elementHandler = GetElementHandler(currentElement.Type);
 
                 if (currentElement
                     .PreviousElements
                     .All(a => _elementStateDict[a.Id] == ProcessorElementState.Processed))
                 {
-                    if (_elementStateDict[currentElement.Id] != ProcessorElementState.Processed)
-                    {
-                        elementHandler.Process(currentElement, SequenceElementHandlerContext);
-                        _elementStateDict[currentElement.Id] = ProcessorElementState.Processed;
-                    }
-
-                    foreach (var nextElement in currentElement.NextElements)
-                    {
-                        var nextElementState = _elementStateDict[nextElement.Id];
-                        if (nextElementState == ProcessorElementState.Ready)
-                            _elementsToBeProcessed.AddLast(nextElement);
-                    }
-                    _iterator = _iterator.Next is null ? _iterator.Previous : _iterator.Next;
-
-                    _elementsToBeProcessed.Remove(currentElement);
+                    ProcessElement(currentElement, elementHandler);
                 }
                 else
                 {
-                    _elementStateDict[currentElement.Id] = ProcessorElementState.Waiting;
-
-                    var previousElements = currentElement
-                        .PreviousElements
-                        .Where(w => _elementStateDict[w.Id] == ProcessorElementState.Ready)
-                        .Where(w => !_elementsToBeProcessed.Contains(w));
-
-                    if (previousElements.Any())
+                    if (currentElement.PreviousElements.All(w => _elementStateDict[w.Id] == ProcessorElementState.DontProcess))
                     {
-                        foreach (var previousElement in previousElements)
-                        {
-                            _elementsToBeProcessed.AddFirst(previousElement);
-                        }
-                        _iterator = _elementsToBeProcessed.First;
+                        _elementStateDict[currentElement.Id] = ProcessorElementState.DontProcess;
+                        _iterator = _iterator.Next;
                     }
+                    else if (
+                        currentElement.PreviousElements.All(w =>
+                            _elementStateDict[w.Id] == ProcessorElementState.DontProcess ||
+                            _elementStateDict[w.Id] == ProcessorElementState.Processed) &&
+                        currentElement.PreviousElements.Any(w => _elementStateDict[w.Id] == ProcessorElementState.DontProcess) &&
+                        currentElement.PreviousElements.Any(w => _elementStateDict[w.Id] == ProcessorElementState.Processed)
+                    )
+                        ProcessElement(currentElement, elementHandler);
                     else
                     {
-                        _iterator = _iterator.Next;
+                        _elementStateDict[currentElement.Id] = ProcessorElementState.Waiting;
+
+                        var previousElements = currentElement
+                                .PreviousElements
+                                .Where(w => _elementStateDict[w.Id] == ProcessorElementState.Ready);
+                                //.Where(w => !_elementsToBeProcessed.Contains(w));
+
+                        if (previousElements.Any())
+                        {
+                            foreach (var previousElement in previousElements)
+                            {
+                                _elementsToBeProcessed.AddFirst(previousElement);
+                            }
+                            _iterator = _elementsToBeProcessed.First;
+                        }
+                        else
+                        {
+                            _iterator = _iterator.Next;
+                        }
                     }
                 }
 
@@ -111,6 +116,84 @@ namespace TraTech.BpmnInterpreter.Core
         {
             _stopFlag = true;
         }
+
+        public override void SetNextElement(BpmnSequenceElement nextElement)
+        {
+            if (nextElement == null) throw new ArgumentNullException(nameof(nextElement));
+            if (_iterator == null) throw new InvalidOperationException("No current element to redirect from.");
+
+            var currentElement = _iterator.Value;
+
+            // Remove all existing next elements from the current element
+            var removalElements = currentElement.NextElements
+                .Except(new[] { nextElement })
+                .Where(w => w.Type != EndEvent.ElementTypeName && w.PreviousElements.Count() == 1)
+                .ToList();
+
+            foreach (var removalElement in removalElements)
+            {
+                currentElement.NextElements.Remove(removalElement);
+                if (_elementStateDict.ContainsKey(removalElement.Id))
+                {
+                    _elementStateDict[removalElement.Id] = ProcessorElementState.DontProcess;
+                    if (_elementsToBeProcessed.Contains(removalElement))
+                    {
+                        _elementsToBeProcessed.Remove(removalElement);
+                    }
+                    MarkNextElementsAsDontProcess(removalElement);
+                }
+
+            }
+
+            // Add the new next element
+            if (!currentElement.NextElements.Contains(nextElement))
+            {
+                currentElement.NextElements.Add(nextElement);
+            }
+
+            // Update the previous elements of the next element
+            if (!nextElement.PreviousElements.Contains(currentElement))
+            {
+                nextElement.PreviousElements.Add(currentElement);
+            }
+
+        }
+        private void MarkNextElementsAsDontProcess(BpmnSequenceElement element)
+        {
+            foreach (var next in element.NextElements.ToList())
+            {
+                if (_elementStateDict.ContainsKey(next.Id) && next.PreviousElements.All(w => _elementStateDict[w.Id] == ProcessorElementState.DontProcess))
+                {
+                    _elementStateDict[next.Id] = ProcessorElementState.DontProcess;
+                    if (_elementsToBeProcessed.Contains(next))
+                    {
+                        _elementsToBeProcessed.Remove(next);
+                    }
+                    MarkNextElementsAsDontProcess(next);
+                }
+            }
+        }
+
+        private void ProcessElement(BpmnSequenceElement currentElement, ISequenceElementHandler elementHandler)
+        {
+            if (_elementStateDict[currentElement.Id] != ProcessorElementState.Processed)
+            {
+                elementHandler.Process(currentElement, SequenceElementHandlerContext);
+                _elementStateDict[currentElement.Id] = ProcessorElementState.Processed;
+            }
+
+            foreach (var nextElement in currentElement.NextElements)
+            {
+                var nextElementState = _elementStateDict[nextElement.Id];
+                if (nextElementState == ProcessorElementState.Ready)
+                    _elementsToBeProcessed.AddLast(nextElement);
+            }
+            _iterator = _iterator.Next is null ? _iterator.Previous : _iterator.Next;
+
+            _elementsToBeProcessed.Remove(currentElement);
+        }
+        //process methodu buraya al end eventin processini tamamla
+
 
         public ISequenceElementHandler GetElementHandler(string elementType)
         {

@@ -7,7 +7,7 @@ namespace Playground.ElementHandlers
     {
         public void Process(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context)
         {
-            Console.Out.WriteLine($"{currentElement.Id} - Processed type is {currentElement.Type}! from {GetType().Name}");
+            Console.Out.WriteLine($"{currentElement.Name} - Processed type is {currentElement.Type}! from {GetType().Name}");
         }
     }
 }

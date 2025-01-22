@@ -25,6 +25,13 @@ namespace TraTech.BpmnInterpreter.Abstractions
                 .Select(s => new EndEvent(s.Self, s.PreviousElements));
         }
 
+        public IEnumerable<ExclusiveGateway> ExclusiveGatewayElements
+        {
+            get => bpmnSequenceElements
+                .Where(w => w.Type == ExclusiveGateway.ElementTypeName)
+                .Select(s => new ExclusiveGateway(s.Self, s.PreviousElements));
+        }
+
         protected ICollection<SequenceFlow> sequenceFlowElements;
         public IEnumerable<SequenceFlow> SequenceFlowElements { get => sequenceFlowElements; }
 
