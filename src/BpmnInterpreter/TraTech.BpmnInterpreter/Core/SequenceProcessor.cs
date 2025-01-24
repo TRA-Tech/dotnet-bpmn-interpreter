@@ -132,7 +132,6 @@ namespace TraTech.BpmnInterpreter.Core
 
             foreach (var removalElement in removalElements)
             {
-                currentElement.NextElements.Remove(removalElement);
                 if (_elementStateDict.ContainsKey(removalElement.Id))
                 {
                     _elementStateDict[removalElement.Id] = ProcessorElementState.DontProcess;
@@ -192,7 +191,6 @@ namespace TraTech.BpmnInterpreter.Core
 
             _elementsToBeProcessed.Remove(currentElement);
         }
-        //process methodu buraya al end eventin processini tamamla
 
 
         public ISequenceElementHandler GetElementHandler(string elementType)
