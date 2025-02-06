@@ -13,7 +13,8 @@ namespace TraTech.BpmnInterpreter.Core
         protected override void SetBpmnSequenceElements()
         {
             bpmnSequenceElements = bpmnElements
-                .Where(w => SequenceFlowElements.Any(a => a.SourceRef == w.Id || a.TargetRef == w.Id))
+                .Where(w => SequenceFlowElements.Any(a => a.SourceRef == w.Id || a.TargetRef == w.Id) ||
+                w.Type == BoundaryEvent.ElementTypeName)
                 .Select(s => new BpmnSequenceElement(s.Self))
                 .ToList();
 

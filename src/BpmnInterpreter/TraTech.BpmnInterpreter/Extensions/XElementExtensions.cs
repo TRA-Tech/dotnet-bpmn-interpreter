@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using TraTech.BpmnInterpreter.Core.Elements;
 
 namespace TraTech.BpmnInterpreter.Extensions
 {
@@ -17,7 +18,7 @@ namespace TraTech.BpmnInterpreter.Extensions
             XNamespace _xNamespace = xNamespace ?? xElement.Name.Namespace;
             return xElement
                 .Elements(_xNamespace.GetName("incoming"))
-                .Select(outgoing => outgoing.Value);
+                .Select(incoming => incoming.Value);
         }
     }
 }
