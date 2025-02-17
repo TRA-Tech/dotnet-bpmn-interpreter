@@ -6,6 +6,7 @@ using TraTech.BpmnInterpreter.Abstractions;
 using TraTech.BpmnInterpreter.Core.Elements;
 using TraTech.BpmnInterpreter.Core.SequenceElements;
 using TraTech.BpmnInterpreter.Enums;
+using TraTech.BpmnInterpreter.Extensions;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace TraTech.BpmnInterpreter.Core
@@ -17,6 +18,7 @@ namespace TraTech.BpmnInterpreter.Core
         private LinkedListNode<BpmnSequenceElement>? _iterator;
         private readonly SequenceElementHandlerContext _handlerContext;
         private bool _stopFlag = false;
+        private IEnumerable<BpmnSequenceElement> _boundaryElements;
 
         public override ISequenceElementHandlerContext SequenceElementHandlerContext => _handlerContext;
 
@@ -27,6 +29,8 @@ namespace TraTech.BpmnInterpreter.Core
             if (bpmnSequenceProcessorBuilderData.BpmnSequence is null) throw new ArgumentException($"{nameof(bpmnSequenceProcessorBuilderData.BpmnSequence)} can not be null!");
 
             _handlerContext = new SequenceElementHandlerContext(bpmnSequenceProcessorBuilderData.DataMap, bpmnSequenceProcessorBuilderData.BpmnSequence, this);
+
+            _boundaryElements = bpmnSequenceProcessorBuilderData.BpmnSequence.BpmnSequenceElements.Where(w => w.Type == BoundaryEvent.ElementTypeName);
 
             foreach (var element in bpmnSequenceProcessorBuilderData.BpmnSequence.BpmnSequenceElements)
             {
@@ -91,7 +95,7 @@ namespace TraTech.BpmnInterpreter.Core
                         var previousElements = currentElement
                                 .PreviousElements
                                 .Where(w => _elementStateDict[w.Id] == ProcessorElementState.Ready);
-                                //.Where(w => !_elementsToBeProcessed.Contains(w));
+                        //.Where(w => !_elementsToBeProcessed.Contains(w));
 
                         if (previousElements.Any())
                         {
@@ -179,6 +183,16 @@ namespace TraTech.BpmnInterpreter.Core
             {
                 elementHandler.Process(currentElement, SequenceElementHandlerContext);
                 _elementStateDict[currentElement.Id] = ProcessorElementState.Processed;
+
+                foreach (var boundary in currentElement.GetBoundaries(_boundaryElements))
+                {
+                    if (_elementStateDict[boundary.Id] != ProcessorElementState.Processed)
+                    {
+                        var boundaryElementHandler = GetElementHandler(boundary.Type);
+                        boundaryElementHandler.Process(boundary, SequenceElementHandlerContext);
+                        _elementStateDict[boundary.Id] = ProcessorElementState.Processed;
+                    }
+                }
             }
 
             foreach (var nextElement in currentElement.NextElements)
