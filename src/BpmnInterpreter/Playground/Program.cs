@@ -23,75 +23,150 @@ namespace Playground
         static void Main(string[] args)
         {
             var xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<definitions xmlns=""http://www.omg.org/spec/BPMN/20100524/MODEL"" xmlns:bpmndi=""http://www.omg.org/spec/BPMN/20100524/DI"" xmlns:omgdi=""http://www.omg.org/spec/DD/20100524/DI"" xmlns:omgdc=""http://www.omg.org/spec/DD/20100524/DC"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" id=""sid-38422fae-e03e-43a3-bef4-bd33b32041b2"" targetNamespace=""http://bpmn.io/bpmn"" exporter=""bpmn-js (https://demo.bpmn.io)"" exporterVersion=""18.1.1"">
-  <process id=""Process_1"" isExecutable=""false"">
-    <task id=""Activity_0k2c2n3"" name=""task1"">
-      <incoming>Flow_1yy49am</incoming>
-      <outgoing>Flow_1jlxq41</outgoing>
-    </task>
-    <intermediateCatchEvent id=""Event_1lspmdt"" name=""message2"">
-      <incoming>Flow_04sl41u</incoming>
-      <outgoing>Flow_1yy49am</outgoing>
-      <messageEventDefinition id=""MessageEventDefinition_0nx91qu"" />
-    </intermediateCatchEvent>
-    <sequenceFlow id=""Flow_1yy49am"" sourceRef=""Event_1lspmdt"" targetRef=""Activity_0k2c2n3"" />
-    <boundaryEvent id=""Event_0n7ntzr"" name=""message3"" attachedToRef=""Activity_0k2c2n3"">
-      <messageEventDefinition id=""MessageEventDefinition_0gvdvzu"" />
-    </boundaryEvent>
-    <endEvent id=""Event_1ph9361"" name=""end event"">
-      <incoming>Flow_1jlxq41</incoming>
-    </endEvent>
-    <sequenceFlow id=""Flow_1jlxq41"" sourceRef=""Activity_0k2c2n3"" targetRef=""Event_1ph9361"" />
-    <startEvent id=""Event_0t8gvnd"" name=""start event"">
-      <outgoing>Flow_04sl41u</outgoing>
-    </startEvent>
-    <sequenceFlow id=""Flow_04sl41u"" sourceRef=""Event_0t8gvnd"" targetRef=""Event_1lspmdt"" />
-  </process>
-  <bpmndi:BPMNDiagram id=""BpmnDiagram_1"">
-    <bpmndi:BPMNPlane id=""BpmnPlane_1"" bpmnElement=""Process_1"">
-      <bpmndi:BPMNShape id=""Activity_0k2c2n3_di"" bpmnElement=""Activity_0k2c2n3"">
-        <omgdc:Bounds x=""350"" y=""80"" width=""100"" height=""80"" />
+<bpmn:definitions xmlns:bpmn=""http://www.omg.org/spec/BPMN/20100524/MODEL"" xmlns:tra=""http://tra"" xmlns:bpmndi=""http://www.omg.org/spec/BPMN/20100524/DI"" xmlns:dc=""http://www.omg.org/spec/DD/20100524/DC"" xmlns:di=""http://www.omg.org/spec/DD/20100524/DI"">
+  <bpmn:process id=""Process_main"">
+    <bpmn:startEvent id=""Event_1a20tjs"">
+      <bpmn:extensionElements>
+        <tra:crons>
+          <tra:cron expression=""0 0/30 * ? * * *"" />
+        </tra:crons>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_17n3a2y</bpmn:outgoing>
+      <bpmn:timerEventDefinition id=""TimerEventDefinition_0mxmwc9"" />
+    </bpmn:startEvent>
+    <bpmn:task id=""kredisqlbuilder"" tra:subtype=""sqlBuilder"" name=""kredisqlbuilder"">
+      <bpmn:extensionElements>
+        <tra:sqlBuilderFrom dataSource=""1"" tableName=""dbo.Kredi"" />
+        <tra:sqlBuilderJoin sourceColumn="""" targetTable="""" targetColumn="""" />
+        <tra:sqlBuilderSelect>
+          <tra:sqlBuilderSelectColumn column=""dbo.Kredi.CustomerName"" type=""string"" alias=""DboKrediCustomerName"" />
+          <tra:sqlBuilderSelectColumn column=""dbo.Kredi.OrderNumber"" type=""number"" alias=""DboKrediOrderNumber"" />
+          <tra:sqlBuilderSelectColumn column=""dbo.Kredi.TotalCredit"" type=""number"" alias=""DboKrediTotalCredit"" />
+        </tra:sqlBuilderSelect>
+        <tra:sqlBuilderWhere />
+        <tra:sqlBuilderLimit limit="""" />
+        <tra:outputMapping saveOutput=""false"" expression=""{&#10;  &#34;data&#34;: output&#10;}"" parsedExpression=""eyJ0eXBlIjoiT2JqZWN0RXhwcmVzc2lvbiIsInByb3BlcnRpZXMiOlt7InR5cGUiOiJQcm9wZXJ0eSIsImNvbXB1dGVkIjpmYWxzZSwia2V5Ijp7InR5cGUiOiJMaXRlcmFsIiwidmFsdWUiOiJkYXRhIiwicmF3IjoiXCJkYXRhXCIifSwidmFsdWUiOnsidHlwZSI6IklkZW50aWZpZXIiLCJuYW1lIjoib3V0cHV0In0sInNob3J0aGFuZCI6ZmFsc2V9XX0="" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17n3a2y</bpmn:incoming>
+      <bpmn:outgoing>Flow_1f35s69</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id=""krediordernumberfilter"" tra:subtype=""filter"" name=""krediordernumberfilter"">
+      <bpmn:extensionElements>
+        <tra:inputSelector selectedInput=""kredisqlbuilder.data"" />
+        <tra:filters>
+          <tra:filter name=""order"" filterType=""builder"" expression=""DboKrediOrderNumber == (18)"" parsedExpression=""eyJ0eXBlIjoiQmluYXJ5RXhwcmVzc2lvbiIsIm9wZXJhdG9yIjoiPT0iLCJsZWZ0Ijp7InR5cGUiOiJJZGVudGlmaWVyIiwibmFtZSI6IkRib0tyZWRpT3JkZXJOdW1iZXIifSwicmlnaHQiOnsidHlwZSI6IkxpdGVyYWwiLCJ2YWx1ZSI6MTgsInJhdyI6IjE4In19"" />
+        </tra:filters>
+        <tra:outputMapping saveOutput=""false"" expression=""{&#10;  &#34;data&#34;: output&#10;}"" parsedExpression=""eyJ0eXBlIjoiT2JqZWN0RXhwcmVzc2lvbiIsInByb3BlcnRpZXMiOlt7InR5cGUiOiJQcm9wZXJ0eSIsImNvbXB1dGVkIjpmYWxzZSwia2V5Ijp7InR5cGUiOiJMaXRlcmFsIiwidmFsdWUiOiJkYXRhIiwicmF3IjoiXCJkYXRhXCIifSwidmFsdWUiOnsidHlwZSI6IklkZW50aWZpZXIiLCJuYW1lIjoib3V0cHV0In0sInNob3J0aGFuZCI6ZmFsc2V9XX0="" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1f35s69</bpmn:incoming>
+      <bpmn:outgoing>Flow_05kznqg</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id=""Flow_17n3a2y"" sourceRef=""Event_1a20tjs"" targetRef=""kredisqlbuilder"" />
+    <bpmn:sequenceFlow id=""Flow_1f35s69"" sourceRef=""kredisqlbuilder"" targetRef=""krediordernumberfilter"" />
+    <bpmn:task id=""map2items"" tra:subtype=""map"">
+      <bpmn:extensionElements>
+        <tra:inputSelector selectedInput=""MessageEventId.krediordernumberfilter.data"" />
+        <tra:maps>
+          <tra:map variableName=""DboKrediCustomerName"" formula=""DboKrediCustomerName"" formulaExpression=""eyJ0eXBlIjoiSWRlbnRpZmllciIsIm5hbWUiOiJEYm9LcmVkaUN1c3RvbWVyTmFtZSJ9"" />
+          <tra:map variableName=""DboKrediOrderNumber"" formula=""DboKrediOrderNumber"" formulaExpression=""eyJ0eXBlIjoiSWRlbnRpZmllciIsIm5hbWUiOiJEYm9LcmVkaU9yZGVyTnVtYmVyIn0="" />
+          <tra:map variableName=""DboKrediTotalCredit"" formula="""" formulaExpression=""eyJ0eXBlIjoiQ29tcG91bmQiLCJib2R5IjpbXX0="" />
+        </tra:maps>
+        <tra:outputMapping saveOutput=""false"" expression=""{&#10;  &#34;data&#34;: output&#10;}"" parsedExpression=""eyJ0eXBlIjoiT2JqZWN0RXhwcmVzc2lvbiIsInByb3BlcnRpZXMiOlt7InR5cGUiOiJQcm9wZXJ0eSIsImNvbXB1dGVkIjpmYWxzZSwia2V5Ijp7InR5cGUiOiJMaXRlcmFsIiwidmFsdWUiOiJkYXRhIiwicmF3IjoiXCJkYXRhXCIifSwidmFsdWUiOnsidHlwZSI6IklkZW50aWZpZXIiLCJuYW1lIjoib3V0cHV0In0sInNob3J0aGFuZCI6ZmFsc2V9XX0="" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_13vyc9a</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qj8tpk</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:intermediateCatchEvent id=""MessageEventId"">
+      <bpmn:extensionElements>
+        <tra:mail to=""ykacar@trabilisim.com; yarenozlemkacar@gmail.com; "" cc=""syazici@trabilisim.com; "" subject=""Konu"" body=""Body"" output=""krediordernumberfilter.data"" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05kznqg</bpmn:incoming>
+      <bpmn:outgoing>Flow_13vyc9a</bpmn:outgoing>
+      <bpmn:messageEventDefinition id=""MessageEventDefinition_0o53lno"" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id=""Flow_05kznqg"" sourceRef=""krediordernumberfilter"" targetRef=""MessageEventId"" />
+    <bpmn:task id=""sontask"" tra:subtype=""map"">
+      <bpmn:extensionElements>
+        <tra:inputSelector selectedInput=""map2items.data"" />
+        <tra:maps>
+          <tra:map variableName=""customer"" formula=""DboKrediCustomerName"" formulaExpression=""eyJ0eXBlIjoiSWRlbnRpZmllciIsIm5hbWUiOiJEYm9LcmVkaUN1c3RvbWVyTmFtZSJ9"" />
+        </tra:maps>
+        <tra:outputMapping saveOutput=""false"" expression=""{&#10;  &#34;data&#34;: output&#10;}"" parsedExpression=""eyJ0eXBlIjoiT2JqZWN0RXhwcmVzc2lvbiIsInByb3BlcnRpZXMiOlt7InR5cGUiOiJQcm9wZXJ0eSIsImNvbXB1dGVkIjpmYWxzZSwia2V5Ijp7InR5cGUiOiJMaXRlcmFsIiwidmFsdWUiOiJkYXRhIiwicmF3IjoiXCJkYXRhXCIifSwidmFsdWUiOnsidHlwZSI6IklkZW50aWZpZXIiLCJuYW1lIjoib3V0cHV0In0sInNob3J0aGFuZCI6ZmFsc2V9XX0="" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qj8tpk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1n6d1n8</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id=""Flow_13vyc9a"" sourceRef=""MessageEventId"" targetRef=""map2items"" />
+    <bpmn:sequenceFlow id=""Flow_1qj8tpk"" sourceRef=""map2items"" targetRef=""sontask"" />
+    <bpmn:endEvent id=""Event_0ss5h3c"">
+      <bpmn:incoming>Flow_1n6d1n8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id=""Flow_1n6d1n8"" sourceRef=""sontask"" targetRef=""Event_0ss5h3c"" />
+    <bpmn:boundaryEvent id=""Event_085mbwq"" attachedToRef=""map2items"">
+      <bpmn:extensionElements>
+        <tra:mail to=""ykacar@trabilisim.com; syazici@trabilisim.com; "" cc=""cturkan@trabilisim.com; "" subject=""Konu"" body=""gövde"" output=""map2items.data"" />
+      </bpmn:extensionElements>
+      <bpmn:messageEventDefinition id=""MessageEventDefinition_0aky2kp"" />
+    </bpmn:boundaryEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id=""BPMNDiagram_1"">
+    <bpmndi:BPMNPlane id=""BPMNPlane_1"" bpmnElement=""Process_main"">
+      <bpmndi:BPMNShape id=""Event_1a20tjs_di"" bpmnElement=""Event_1a20tjs"">
+        <dc:Bounds x=""272"" y=""112"" width=""36"" height=""36"" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id=""Activity_11snd2o_di"" bpmnElement=""kredisqlbuilder"">
+        <dc:Bounds x=""240"" y=""190"" width=""100"" height=""80"" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Event_0ixb6m0_di"" bpmnElement=""Event_1lspmdt"">
-        <omgdc:Bounds x=""242"" y=""102"" width=""36"" height=""36"" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x=""234"" y=""145"" width=""52"" height=""14"" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id=""Activity_140fyfl_di"" bpmnElement=""krediordernumberfilter"">
+        <dc:Bounds x=""240"" y=""300"" width=""100"" height=""80"" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Event_1ph9361_di"" bpmnElement=""Event_1ph9361"">
-        <omgdc:Bounds x=""562"" y=""102"" width=""36"" height=""36"" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x=""555"" y=""145"" width=""50"" height=""14"" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id=""Event_0dt2py5_di"" bpmnElement=""MessageEventId"">
+        <dc:Bounds x=""272"" y=""402"" width=""36"" height=""36"" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Event_0t8gvnd_di"" bpmnElement=""Event_0t8gvnd"">
-        <omgdc:Bounds x=""152"" y=""102"" width=""36"" height=""36"" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x=""144"" y=""145"" width=""53"" height=""14"" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id=""Activity_11o6o59_di"" bpmnElement=""sontask"">
+        <dc:Bounds x=""440"" y=""460"" width=""100"" height=""80"" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id=""Event_0n7ntzr_di"" bpmnElement=""Event_0n7ntzr"">
-        <omgdc:Bounds x=""382"" y=""142"" width=""36"" height=""36"" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x=""374"" y=""185"" width=""52"" height=""14"" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id=""Activity_13ygffw_di"" bpmnElement=""map2items"">
+        <dc:Bounds x=""240"" y=""460"" width=""100"" height=""80"" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id=""Flow_1yy49am_di"" bpmnElement=""Flow_1yy49am"">
-        <omgdi:waypoint x=""278"" y=""120"" />
-        <omgdi:waypoint x=""350"" y=""120"" />
+      <bpmndi:BPMNShape id=""Event_0ss5h3c_di"" bpmnElement=""Event_0ss5h3c"">
+        <dc:Bounds x=""612"" y=""482"" width=""36"" height=""36"" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id=""Event_085mbwq_di"" bpmnElement=""Event_085mbwq"">
+        <dc:Bounds x=""322"" y=""482"" width=""36"" height=""36"" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id=""Flow_17n3a2y_di"" bpmnElement=""Flow_17n3a2y"">
+        <di:waypoint x=""290"" y=""148"" />
+        <di:waypoint x=""290"" y=""190"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_1jlxq41_di"" bpmnElement=""Flow_1jlxq41"">
-        <omgdi:waypoint x=""450"" y=""120"" />
-        <omgdi:waypoint x=""562"" y=""120"" />
+      <bpmndi:BPMNEdge id=""Flow_1f35s69_di"" bpmnElement=""Flow_1f35s69"">
+        <di:waypoint x=""290"" y=""270"" />
+        <di:waypoint x=""290"" y=""300"" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id=""Flow_04sl41u_di"" bpmnElement=""Flow_04sl41u"">
-        <omgdi:waypoint x=""188"" y=""120"" />
-        <omgdi:waypoint x=""242"" y=""120"" />
+      <bpmndi:BPMNEdge id=""Flow_05kznqg_di"" bpmnElement=""Flow_05kznqg"">
+        <di:waypoint x=""290"" y=""380"" />
+        <di:waypoint x=""290"" y=""402"" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id=""Flow_13vyc9a_di"" bpmnElement=""Flow_13vyc9a"">
+        <di:waypoint x=""290"" y=""438"" />
+        <di:waypoint x=""290"" y=""460"" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id=""Flow_1qj8tpk_di"" bpmnElement=""Flow_1qj8tpk"">
+        <di:waypoint x=""290"" y=""540"" />
+        <di:waypoint x=""290"" y=""570"" />
+        <di:waypoint x=""480"" y=""570"" />
+        <di:waypoint x=""480"" y=""540"" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id=""Flow_1n6d1n8_di"" bpmnElement=""Flow_1n6d1n8"">
+        <di:waypoint x=""540"" y=""500"" />
+        <di:waypoint x=""612"" y=""500"" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</definitions>
+</bpmn:definitions>
+
 
 ";
 

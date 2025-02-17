@@ -14,7 +14,7 @@ namespace Playground.ElementHandlers
         {
             var data = context.DataMap.Get<Data>("object");
 
-            Console.Out.WriteLine($"{currentElement.Name} - Processed data.Number is {data.Number}! from {nameof(IntermediateCatchEventHandler)}");
+            Console.Out.WriteLine($"{currentElement.Name} - Processed! from {nameof(IntermediateCatchEventHandler)}");
         }
     }
 }
