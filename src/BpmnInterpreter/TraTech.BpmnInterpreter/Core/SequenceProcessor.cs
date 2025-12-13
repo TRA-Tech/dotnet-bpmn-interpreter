@@ -1,16 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using TraTech.BpmnInterpreter.Abstractions;
-using TraTech.BpmnInterpreter.Core.Elements;
+﻿using TraTech.BpmnInterpreter.Abstractions;
 using TraTech.BpmnInterpreter.Core.SequenceElements;
 using TraTech.BpmnInterpreter.Enums;
 using TraTech.BpmnInterpreter.Extensions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TraTech.BpmnInterpreter.Core
 {
+    /// <summary>
+    /// Processes a BPMN sequence by executing elements in order.
+    /// </summary>
     public class SequenceProcessor : BaseSequenceProcessor
     {
         private readonly Dictionary<string, ProcessorElementState> _elementStateDict = new();
@@ -20,8 +17,16 @@ namespace TraTech.BpmnInterpreter.Core
         private bool _stopFlag = false;
         private IEnumerable<BpmnSequenceElement> _boundaryElements;
 
+        /// <summary>
+        /// Gets the context for the sequence element handler.
+        /// </summary>
         public override ISequenceElementHandlerContext SequenceElementHandlerContext => _handlerContext;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SequenceProcessor"/> class.
+        /// </summary>
+        /// <param name="bpmnSequenceProcessorBuilderData">The data used to build the sequence processor.</param>
+        /// <exception cref="ArgumentException">Thrown when DataMap or BpmnSequence is null.</exception>
         public SequenceProcessor(BpmnSequenceProcessorData bpmnSequenceProcessorBuilderData)
             : base(bpmnSequenceProcessorBuilderData)
         {
@@ -38,6 +43,11 @@ namespace TraTech.BpmnInterpreter.Core
             }
         }
 
+        /// <summary>
+        /// Starts the execution of the BPMN sequence.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown when BpmnSequence is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the sequence does not have a start or end event.</exception>
         public override void Start()
         {
             if (data.BpmnSequence is null)
@@ -95,7 +105,6 @@ namespace TraTech.BpmnInterpreter.Core
                         var previousElements = currentElement
                                 .PreviousElements
                                 .Where(w => _elementStateDict[w.Id] == ProcessorElementState.Ready);
-                        //.Where(w => !_elementsToBeProcessed.Contains(w));
 
                         if (previousElements.Any())
                         {
@@ -116,11 +125,20 @@ namespace TraTech.BpmnInterpreter.Core
             }
         }
 
+        /// <summary>
+        /// Stops the execution of the sequence.
+        /// </summary>
         public override void Stop()
         {
             _stopFlag = true;
         }
 
+        /// <summary>
+        /// Sets the next element to be processed, modifying the flow of execution.
+        /// </summary>
+        /// <param name="nextElement">The next BPMN sequence element.</param>
+        /// <exception cref="ArgumentNullException">Thrown when nextElement is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when there is no current element to redirect from.</exception>
         public override void SetNextElement(BpmnSequenceElement nextElement)
         {
             if (nextElement == null) throw new ArgumentNullException(nameof(nextElement));
@@ -207,6 +225,12 @@ namespace TraTech.BpmnInterpreter.Core
         }
 
 
+        /// <summary>
+        /// Retrieves the element handler for the specified element type.
+        /// </summary>
+        /// <param name="elementType">The type of the BPMN element.</param>
+        /// <returns>The element handler for the specified type.</returns>
+        /// <exception cref="KeyNotFoundException">Thrown when no handler is found for the element type and no default handler is provided.</exception>
         public ISequenceElementHandler GetElementHandler(string elementType)
         {
             ISequenceElementHandler? elementHandler;
