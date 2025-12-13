@@ -3,9 +3,19 @@ using System.Xml.Linq;
 
 namespace TraTech.BpmnInterpreter.Core.Elements
 {
+    /// <summary>
+    /// Represents a generic BPMN element parsed from XML.
+    /// </summary>
     public class BpmnElement
     {
+        /// <summary>
+        /// The name of the extension elements XML element.
+        /// </summary>
         public const string ExtensionElementsName = "extensionElements";
+
+        /// <summary>
+        /// The name of the event definition XML element.
+        /// </summary>
         public const string EventDefinitionName = "EventDefinition";
 
         private readonly string _type;
@@ -14,14 +24,49 @@ namespace TraTech.BpmnInterpreter.Core.Elements
         private readonly XElement _self;
         private readonly XNamespace _namespace;
 
+        /// <summary>
+        /// Gets the type of the BPMN element.
+        /// </summary>
         public string Type { get { return _type; } }
+
+        /// <summary>
+        /// Gets the ID of the BPMN element.
+        /// </summary>
         public string Id { get { return _id; } }
+
+        /// <summary>
+        /// Gets the name of the BPMN element.
+        /// </summary>
         public string? Name { get { return _name; } }
+
+        /// <summary>
+        /// Gets the underlying XML element.
+        /// </summary>
         public XElement Self { get { return _self; } }
+
+        /// <summary>
+        /// Gets the XML namespace of the element.
+        /// </summary>
         public XNamespace Namespace { get { return _namespace; } }
+
+        /// <summary>
+        /// Gets a value indicating whether the element has a parent.
+        /// </summary>
         public bool HasParent { get { return _self.Parent != null; } }
+
+        /// <summary>
+        /// Gets a value indicating whether the element has children.
+        /// </summary>
         public bool HasChildren { get { return _self.HasElements; } }
+
+        /// <summary>
+        /// Gets a value indicating whether the element has extension elements.
+        /// </summary>
         public bool HasExtensionElements { get { return _self.Elements(_namespace.GetName(ExtensionElementsName)).Any(); } }
+
+        /// <summary>
+        /// Gets a value indicating whether the element has event definitions.
+        /// </summary>
         public bool HasEventDefinitions
         {
             get
@@ -34,6 +79,10 @@ namespace TraTech.BpmnInterpreter.Core.Elements
                     );
             }
         }
+
+        /// <summary>
+        /// Gets the children of the element.
+        /// </summary>
         public IEnumerable<XElement> Children
         {
             get
@@ -41,6 +90,10 @@ namespace TraTech.BpmnInterpreter.Core.Elements
                 return _self.Elements();
             }
         }
+
+        /// <summary>
+        /// Gets the extension elements of the element.
+        /// </summary>
         public IEnumerable<XElement> ExtensionElements
         {
             get
@@ -51,6 +104,10 @@ namespace TraTech.BpmnInterpreter.Core.Elements
                 return Enumerable.Empty<XElement>();
             }
         }
+
+        /// <summary>
+        /// Gets the event definitions of the element.
+        /// </summary>
         public IEnumerable<XElement> EventDefinitions
         {
             get
@@ -66,6 +123,12 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BpmnElement"/> class.
+        /// </summary>
+        /// <param name="self">The XML element representing the BPMN element.</param>
+        /// <exception cref="ArgumentNullException">Thrown when self is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when self has no id attribute.</exception>
         public BpmnElement(XElement self)
         {
             _self = self ?? throw new ArgumentNullException(nameof(self));
@@ -75,6 +138,13 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             _namespace = _self.Name.Namespace;
         }
 
+        /// <summary>
+        /// Parses an extension element of the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of the extension element to parse.</typeparam>
+        /// <returns>The parsed extension element.</returns>
+        /// <exception cref="Exception">Thrown when the extension element cannot be found or parsed.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the parsing method invocation fails.</exception>
         public T ParseExtensionElement<T>()
             where T : class
         {
@@ -104,6 +174,12 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             throw new InvalidOperationException($"Failed to invoke the '{methodName}' method");
         }
 
+        /// <summary>
+        /// Parses an event definition of the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of the event definition to parse.</typeparam>
+        /// <returns>The parsed event definition.</returns>
+        /// <exception cref="Exception">Thrown when the event definition cannot be found or parsed.</exception>
         public T ParseEventDefinition<T>()
             where T : class
         {
@@ -128,6 +204,12 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             return result;
         }
 
+        /// <summary>
+        /// Checks if the element has an extension element with the specified name.
+        /// </summary>
+        /// <param name="extensionElementName">The name of the extension element.</param>
+        /// <param name="xNamespace">The XML namespace. If null, the element's namespace is used.</param>
+        /// <returns>True if the extension element exists; otherwise, false.</returns>
         public bool HasExtensionElementOf(string extensionElementName, XNamespace? xNamespace = null)
         {
             var nameSpace = xNamespace ?? _namespace;
@@ -135,6 +217,12 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             return ExtensionElements.Any(a => a.Name == name);
         }
 
+        /// <summary>
+        /// Checks if the element has an event definition with the specified name.
+        /// </summary>
+        /// <param name="eventDefinitionName">The name of the event definition.</param>
+        /// <param name="xNamespace">The XML namespace. If null, the element's namespace is used.</param>
+        /// <returns>True if the event definition exists; otherwise, false.</returns>
         public bool HasEventDefinitionOf(string eventDefinitionName, XNamespace? xNamespace = null)
         {
             var nameSpace = xNamespace ?? _namespace;
@@ -142,6 +230,12 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             return EventDefinitions.Any(a => a.Name == name);
         }
 
+        /// <summary>
+        /// Checks if the element has a child element of the specified type.
+        /// </summary>
+        /// <param name="childType">The type of the child element.</param>
+        /// <param name="xNamespace">The XML namespace. If null, the element's namespace is used.</param>
+        /// <returns>True if the child element exists; otherwise, false.</returns>
         public bool HasChildOf(string childType, XNamespace? xNamespace = null)
         {
             if (!HasChildren) return false;
@@ -150,6 +244,11 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             return Self.Elements(name).Any();
         }
 
+        /// <summary>
+        /// Determines whether the specified object is equal to the current object.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>True if the specified object is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object? obj)
         {
             if (obj is null)
@@ -167,6 +266,10 @@ namespace TraTech.BpmnInterpreter.Core.Elements
             return false;
         }
 
+        /// <summary>
+        /// Serves as the default hash function.
+        /// </summary>
+        /// <returns>A hash code for the current object.</returns>
         public override int GetHashCode()
         {
             return Id.GetHashCode();
