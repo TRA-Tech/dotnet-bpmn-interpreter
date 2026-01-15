@@ -39,7 +39,7 @@ namespace TraTech.BpmnInterpreter.Core
         private readonly Dictionary<string, ExecutionState> _elementStateDict = [];
         private readonly Queue<BpmnSequenceElement> _workQueue = new();
         private readonly HashSet<string> _scheduledIds = [];
-        private readonly SequenceElementHandlerContextt _handlerContext;
+        private readonly SequenceElementHandlerContext _handlerContext;
 
         private bool _stopFlag = false;
 
@@ -74,7 +74,7 @@ namespace TraTech.BpmnInterpreter.Core
             if (bpmnSequenceProcessorBuilderData.DataMap is null) throw new ArgumentException($"{nameof(bpmnSequenceProcessorBuilderData.DataMap)} can not be null!");
             if (bpmnSequenceProcessorBuilderData.BpmnSequence is null) throw new ArgumentException($"{nameof(bpmnSequenceProcessorBuilderData.BpmnSequence)} can not be null!");
 
-            _handlerContext = new SequenceElementHandlerContextt(bpmnSequenceProcessorBuilderData.DataMap, bpmnSequenceProcessorBuilderData.BpmnSequence, this);
+            _handlerContext = new SequenceElementHandlerContext(bpmnSequenceProcessorBuilderData.DataMap, bpmnSequenceProcessorBuilderData.BpmnSequence, this);
 
             foreach (var element in bpmnSequenceProcessorBuilderData.BpmnSequence.BpmnSequenceElements)
             {

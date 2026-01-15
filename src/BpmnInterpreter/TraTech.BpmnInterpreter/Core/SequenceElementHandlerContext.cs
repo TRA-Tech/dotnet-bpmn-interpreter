@@ -6,7 +6,7 @@ namespace TraTech.BpmnInterpreter.Core
     /// Represents the context passed to sequence element handlers.
     /// Provides access to shared data and processor/sequence services for the current execution.
     /// </summary>
-    public class SequenceElementHandlerContextt : ISequenceElementHandlerContext
+    public class SequenceElementHandlerContext : ISequenceElementHandlerContext
     {
         private readonly IDataMap _dataMap;
         private readonly BaseSequence _sequence;
@@ -28,12 +28,12 @@ namespace TraTech.BpmnInterpreter.Core
         public BaseSequenceProcessor SequenceProcessor => _sequenceProcessor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SequenceElementHandlerContextt"/> class.
+        /// Initializes a new instance of the <see cref="SequenceElementHandlerContext"/> class.
         /// </summary>
         /// <param name="dataMap">The data map used for execution-scoped values.</param>
         /// <param name="sequence">The BPMN sequence being executed.</param>
         /// <param name="sequenceProcessor">The processor coordinating the execution.</param>
-        public SequenceElementHandlerContextt(IDataMap dataMap, BaseSequence sequence, BaseSequenceProcessor sequenceProcessor)
+        public SequenceElementHandlerContext(IDataMap dataMap, BaseSequence sequence, BaseSequenceProcessor sequenceProcessor)
         {
             _dataMap = dataMap;
             _sequence = sequence;
