@@ -5,12 +5,12 @@ using System.Xml.Linq;
 namespace TraTech.BpmnInterpreter.Core
 {
     /// <summary>
-    /// Reads BPMN elements from an XML document.
+    /// Reads BPMN elements from a BPMN XML document.
     /// </summary>
     public class BpmnReader : IBpmnReader
     {
         /// <summary>
-        /// The XML namespace for the BPMN elements.
+        /// The XML namespace used for BPMN elements.
         /// </summary>
         public readonly XNamespace BpmnNameSpace;
 
@@ -26,19 +26,20 @@ namespace TraTech.BpmnInterpreter.Core
         /// <summary>
         /// Reads BPMN elements from the specified XML document.
         /// </summary>
-        /// <param name="bpmnDocument">The XML document containing the BPMN definition.</param>
-        /// <returns>A collection of BPMN elements parsed from the document.</returns>
-        /// <exception cref="NullReferenceException">Thrown when the process element is not found in the document.</exception>
+        /// <param name="bpmnDocument">The BPMN XML document.</param>
+        /// <returns>
+        /// A collection containing the <c>process</c> element itself and the elements under it that have an <c>id</c> attribute.
+        /// </returns>
         public IEnumerable<BpmnElement> Read(XDocument bpmnDocument)
         {
             var processElement = bpmnDocument.Root?.Element(BpmnNameSpace.GetName(Process.ElementTypeName));
 
             if (processElement == null) throw new NullReferenceException(nameof(processElement));
 
-            List<BpmnElement> bpmnElementList = new()
-            {
+            List<BpmnElement> bpmnElementList =
+            [
                 new BpmnElement(processElement)
-            };
+            ];
 
             foreach (XElement element in processElement.Elements())
             {

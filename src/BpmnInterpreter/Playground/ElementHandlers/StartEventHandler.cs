@@ -5,7 +5,7 @@ namespace Playground.ElementHandlers
 {
     public class StartEventHandler : ISequenceElementHandler
     {
-        public void Process(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context)
+        public System.Threading.Tasks.Task<SequenceNextDecision> ProcessAsync(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context, CancellationToken cancellationToken = default)
         {
             context.DataMap.Set("number", 10);
             context.DataMap.Set("object", new Data()
@@ -18,6 +18,8 @@ namespace Playground.ElementHandlers
             context.DataMap.TrySet("number", 10);
             context.DataMap.TrySet("value", 10);
             Console.Out.WriteLine($"{currentElement.Name} - Processed! from {nameof(StartEventHandler)}");
+
+            return System.Threading.Tasks.Task.FromResult(SequenceNextDecision.UseDefault());
         }
     }
 }

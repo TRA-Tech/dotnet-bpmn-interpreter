@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TraTech.BpmnInterpreter.Abstractions;
+﻿using TraTech.BpmnInterpreter.Abstractions;
 using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace Playground.ElementHandlers
 {
     public class ExclusiveGatewayHandler : ISequenceElementHandler
     {
-        public void Process(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context)
+        public System.Threading.Tasks.Task<SequenceNextDecision> ProcessAsync(BpmnSequenceElement currentElement, ISequenceElementHandlerContext context, CancellationToken cancellationToken = default)
         {
-            var data = currentElement.NextElements.LastOrDefault();
-            context.SequenceProcessor.SetNextElement(data);
+            var next = currentElement.NextElements.LastOrDefault();
             Console.Out.WriteLine($"{currentElement.Name} - Processed! from {nameof(ExclusiveGatewayHandler)}");
+
+            return System.Threading.Tasks.Task.FromResult(next is null ? SequenceNextDecision.None() : SequenceNextDecision.WithNext(next));
         }
     }
 }

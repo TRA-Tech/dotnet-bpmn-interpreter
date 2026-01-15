@@ -3,7 +3,7 @@ using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace Playground.ElementHandlers
 {
-    public class BoundaryEventHandler : IBoundaryEventHandler
+    public class DefaultBoundaryEventHandler : IBoundaryEventHandler
     {
         public System.Threading.Tasks.Task ProcessAsync(BoundaryEvent boundaryElement, ISequenceElementHandlerContext context, CancellationToken cancellationToken = default)
         {
