@@ -1,7 +1,7 @@
 ﻿namespace TraTech.BpmnInterpreter.Abstractions
 {
     /// <summary>
-    /// Defines a contract for building a sequence processor.
+    /// Defines a contract for configuring and building a <see cref="BaseSequenceProcessor"/>.
     /// </summary>
     public interface ISequenceProcessorBuilder
     {
@@ -9,8 +9,10 @@
         /// Creates a new instance of the specified sequence processor builder type.
         /// </summary>
         /// <typeparam name="TBuilder">The type of the sequence processor builder to create.</typeparam>
-        /// <returns>A new instance of the sequence processor builder.</returns>
-        /// <exception cref="InvalidOperationException">Thrown when the instance creation fails.</exception>
+        /// <returns>A new builder instance.</returns>
+        /// <remarks>
+        /// The builder type must expose a public parameterless constructor.
+        /// </remarks>
         static ISequenceProcessorBuilder Create<TBuilder>()
             where TBuilder : class, ISequenceProcessorBuilder
         {
@@ -26,9 +28,17 @@
         /// Registers a handler for a specific BPMN element type.
         /// </summary>
         /// <param name="elementTypeName">The name of the BPMN element type.</param>
-        /// <param name="bpmnSequenceElementHandler">The handler to use for the specified element type.</param>
+        /// <param name="bpmnSequenceElementHandler">The handler to use for elements of the specified type.</param>
         /// <returns>The current builder instance.</returns>
         ISequenceProcessorBuilder UsingElementHandler(string elementTypeName, ISequenceElementHandler bpmnSequenceElementHandler);
+
+        /// <summary>
+        /// Registers a handler for a specific BPMN boundary element type.
+        /// </summary>
+        /// <param name="elementTypeName">The name of the BPMN boundary element type.</param>
+        /// <param name="bpmnBoundaryElementHandler">The handler to use for boundary events of the specified type.</param>
+        /// <returns>The current builder instance.</returns>
+        ISequenceProcessorBuilder UsingBoundaryElementHandler(string elementTypeName, IBoundaryEventHandler bpmnBoundaryElementHandler);
 
         /// <summary>
         /// Sets the default element handler to be used when no specific handler is registered for an element type.
@@ -36,6 +46,13 @@
         /// <param name="bpmnSequenceElementHandler">The default element handler.</param>
         /// <returns>The current builder instance.</returns>
         ISequenceProcessorBuilder WithDefaultElementHandler(ISequenceElementHandler bpmnSequenceElementHandler);
+
+        /// <summary>
+        /// Sets the default boundary handler to be used when no specific boundary handler is registered for a boundary element type.
+        /// </summary>
+        /// <param name="bpmnSequenceElementHandler">The default boundary element handler.</param>
+        /// <returns>The current builder instance.</returns>
+        ISequenceProcessorBuilder WithDefaultBoundaryElementHandler(IBoundaryEventHandler bpmnSequenceElementHandler);
 
         /// <summary>
         /// Sets the BPMN sequence to be processed.
@@ -56,6 +73,9 @@
         /// </summary>
         /// <typeparam name="TProcessor">The type of the sequence processor to build.</typeparam>
         /// <returns>A new instance of the sequence processor.</returns>
+        /// <remarks>
+        /// Implementations typically use the configured sequence, data map, and registered handlers to construct a processor.
+        /// </remarks>
         TProcessor Build<TProcessor>() where TProcessor : BaseSequenceProcessor;
 
         /// <summary>
@@ -63,12 +83,15 @@
         /// </summary>
         /// <param name="typeOfProcessor">The type of the sequence processor to build.</param>
         /// <returns>A new instance of the sequence processor.</returns>
+        /// <remarks>
+        /// Implementations typically use the configured sequence, data map, and registered handlers to construct a processor.
+        /// </remarks>
         BaseSequenceProcessor Build(Type typeOfProcessor);
 
         /// <summary>
         /// Creates a clone of the current sequence processor builder.
         /// </summary>
-        /// <returns>A new instance of the sequence processor builder with the same configuration.</returns>
+        /// <returns>A new builder instance with the same configuration.</returns>
         ISequenceProcessorBuilder Clone();
     }
 }

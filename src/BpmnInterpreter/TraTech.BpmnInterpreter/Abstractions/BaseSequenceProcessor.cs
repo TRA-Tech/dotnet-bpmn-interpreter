@@ -1,43 +1,47 @@
 ﻿using TraTech.BpmnInterpreter.Core;
-using TraTech.BpmnInterpreter.Core.SequenceElements;
 
 namespace TraTech.BpmnInterpreter.Abstractions
 {
     /// <summary>
-    /// Represents the base class for a sequence processor, responsible for executing the BPMN sequence.
+    /// Represents the base class for a BPMN sequence processor.
+    /// Implementations are responsible for coordinating the execution of a loaded BPMN sequence.
     /// </summary>
     public abstract class BaseSequenceProcessor
     {
         /// <summary>
-        /// The data associated with the sequence processor.
+        /// The immutable data used to configure and build a processor instance.
         /// </summary>
         protected readonly BpmnSequenceProcessorData data;
 
         /// <summary>
-        /// Gets the context for the sequence element handler.
+        /// Gets the handler context used to resolve and execute element handlers.
         /// </summary>
         public abstract ISequenceElementHandlerContext SequenceElementHandlerContext { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseSequenceProcessor"/> class.
         /// </summary>
-        /// <param name="bpmnSequenceProcessorBuilderData">The data used to build the sequence processor.</param>
-        public BaseSequenceProcessor(BpmnSequenceProcessorData bpmnSequenceProcessorBuilderData)
+        /// <param name="bpmnSequenceProcessorData">The data used to build the sequence processor.</param>
+        public BaseSequenceProcessor(BpmnSequenceProcessorData bpmnSequenceProcessorData)
         {
-            data = bpmnSequenceProcessorBuilderData;
+            data = bpmnSequenceProcessorData;
         }
 
         /// <summary>
         /// Creates a new instance of the specified sequence processor type.
+        /// The processor type must expose a public constructor with a single <see cref="BpmnSequenceProcessorData"/> parameter.
         /// </summary>
         /// <typeparam name="TProcessor">The type of the sequence processor to create.</typeparam>
-        /// <param name="bpmnSequenceProcessorBuilderData">The data used to build the sequence processor.</param>
+        /// <param name="bpmnSequenceProcessorData">The data used to build the sequence processor.</param>
         /// <returns>A new instance of the sequence processor.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="bpmnSequenceProcessorData"/> is <see langword="null"/>.</exception>
         /// <exception cref="InvalidOperationException">Thrown when the instance creation fails.</exception>
-        public static TProcessor Create<TProcessor>(BpmnSequenceProcessorData bpmnSequenceProcessorBuilderData)
+        public static TProcessor Create<TProcessor>(BpmnSequenceProcessorData bpmnSequenceProcessorData)
             where TProcessor : BaseSequenceProcessor
         {
-            var instance = Activator.CreateInstance(typeof(TProcessor), bpmnSequenceProcessorBuilderData);
+            ArgumentNullException.ThrowIfNull(bpmnSequenceProcessorData);
+
+            var instance = Activator.CreateInstance(typeof(TProcessor), bpmnSequenceProcessorData);
             if (instance is TProcessor processorInstance)
             {
                 return processorInstance;
@@ -47,14 +51,19 @@ namespace TraTech.BpmnInterpreter.Abstractions
 
         /// <summary>
         /// Creates a new instance of the specified sequence processor type.
+        /// The processor type must expose a public constructor with a single <see cref="BpmnSequenceProcessorData"/> parameter.
         /// </summary>
         /// <param name="typeOfProcessor">The type of the sequence processor to create.</param>
-        /// <param name="bpmnSequenceProcessorBuilderData">The data used to build the sequence processor.</param>
+        /// <param name="bpmnSequenceProcessorData">The data used to build the sequence processor.</param>
         /// <returns>A new instance of the sequence processor.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="typeOfProcessor"/> or <paramref name="bpmnSequenceProcessorData"/> is <see langword="null"/>.</exception>
         /// <exception cref="InvalidOperationException">Thrown when the instance creation fails.</exception>
-        public static BaseSequenceProcessor Create(Type typeOfProcessor, BpmnSequenceProcessorData bpmnSequenceProcessorBuilderData)
+        public static BaseSequenceProcessor Create(Type typeOfProcessor, BpmnSequenceProcessorData bpmnSequenceProcessorData)
         {
-            var instance = Activator.CreateInstance(typeOfProcessor, bpmnSequenceProcessorBuilderData);
+            ArgumentNullException.ThrowIfNull(typeOfProcessor);
+            ArgumentNullException.ThrowIfNull(bpmnSequenceProcessorData);
+
+            var instance = Activator.CreateInstance(typeOfProcessor, bpmnSequenceProcessorData);
             if (instance is BaseSequenceProcessor processorInstance)
             {
                 return processorInstance;
@@ -63,15 +72,16 @@ namespace TraTech.BpmnInterpreter.Abstractions
         }
 
         /// <summary>
-        /// Starts the execution of the sequence.
+        /// Starts the execution of the sequence asynchronously.
         /// </summary>
-        public abstract void Start();
+        /// <param name="cancellationToken">A token used to cancel the execution.</param>
+        public abstract Task StartAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Sets the next element to be processed in the sequence.
+        /// Resets any mutable run state so the processor can be executed again.
+        /// Implementations should clear any in-memory execution state, without modifying the configured <see cref="data"/>.
         /// </summary>
-        /// <param name="nextElement">The next BPMN sequence element.</param>
-        public abstract void SetNextElement(BpmnSequenceElement nextElement);
+        protected abstract void ResetRunState();
 
         /// <summary>
         /// Stops the execution of the sequence.

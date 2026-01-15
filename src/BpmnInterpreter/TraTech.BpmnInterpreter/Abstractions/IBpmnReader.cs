@@ -4,7 +4,7 @@ using TraTech.BpmnInterpreter.Core.Elements;
 namespace TraTech.BpmnInterpreter.Abstractions
 {
     /// <summary>
-    /// Defines a contract for reading BPMN elements from an XML document.
+    /// Defines a contract for reading BPMN elements from a BPMN XML document.
     /// </summary>
     public interface IBpmnReader
     {
@@ -12,7 +12,8 @@ namespace TraTech.BpmnInterpreter.Abstractions
         /// Reads BPMN elements from the specified XML document.
         /// </summary>
         /// <param name="bpmnDocument">The XML document containing the BPMN definition.</param>
-        /// <returns>A collection of BPMN elements parsed from the document.</returns>
+        /// <returns>The BPMN elements parsed from the document.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="bpmnDocument"/> is <see langword="null"/>.</exception>
         public IEnumerable<BpmnElement> Read(XDocument bpmnDocument);
     }
 }

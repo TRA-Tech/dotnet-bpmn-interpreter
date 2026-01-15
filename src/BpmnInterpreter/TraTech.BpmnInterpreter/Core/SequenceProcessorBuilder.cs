@@ -3,7 +3,7 @@
 namespace TraTech.BpmnInterpreter.Core
 {
     /// <summary>
-    /// Builds a sequence processor with the specified configuration.
+    /// Builds a <see cref="BaseSequenceProcessor"/> instance from the configured sequence, data map, and handler registrations.
     /// </summary>
     public class SequenceProcessorBuilder : ISequenceProcessorBuilder
     {
@@ -12,6 +12,9 @@ namespace TraTech.BpmnInterpreter.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="SequenceProcessorBuilder"/> class.
         /// </summary>
+        /// <remarks>
+        /// A default <see cref="IDataMap"/> implementation is created.
+        /// </remarks>
         public SequenceProcessorBuilder()
         {
             _data.DataMap = new DataMap();
@@ -20,7 +23,7 @@ namespace TraTech.BpmnInterpreter.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="SequenceProcessorBuilder"/> class with the specified data.
         /// </summary>
-        /// <param name="data">The data to initialize the builder with.</param>
+        /// <param name="data">The processor configuration to initialize the builder with.</param>
         public SequenceProcessorBuilder(BpmnSequenceProcessorData data)
         {
             _data = data;
@@ -31,6 +34,9 @@ namespace TraTech.BpmnInterpreter.Core
         /// </summary>
         /// <typeparam name="TProcessor">The type of the sequence processor to build.</typeparam>
         /// <returns>A new instance of the sequence processor.</returns>
+        /// <remarks>
+        /// The processor type must expose a public constructor with a single <see cref="BpmnSequenceProcessorData"/> parameter.
+        /// </remarks>
         public TProcessor Build<TProcessor>() where TProcessor : BaseSequenceProcessor
         {
             return BaseSequenceProcessor.Create<TProcessor>(_data);
@@ -41,7 +47,10 @@ namespace TraTech.BpmnInterpreter.Core
         /// </summary>
         /// <param name="typeOfProcessor">The type of the sequence processor to build.</param>
         /// <returns>A new instance of the sequence processor.</returns>
-        /// <exception cref="ArgumentException">Thrown when the type is not assignable to BaseSequenceProcessor.</exception>
+        /// <remarks>
+        /// The processor type must be assignable to <see cref="BaseSequenceProcessor"/> and expose a public constructor with a single
+        /// <see cref="BpmnSequenceProcessorData"/> parameter.
+        /// </remarks>
         public BaseSequenceProcessor Build(Type typeOfProcessor)
         {
             if (!typeOfProcessor.IsAssignableTo(typeof(BaseSequenceProcessor)))
@@ -54,7 +63,10 @@ namespace TraTech.BpmnInterpreter.Core
         /// <summary>
         /// Creates a clone of the current sequence processor builder.
         /// </summary>
-        /// <returns>A new instance of the sequence processor builder with the same configuration.</returns>
+        /// <returns>A new builder instance with the same configuration.</returns>
+        /// <remarks>
+        /// The clone shares the same underlying <see cref="BpmnSequenceProcessorData"/> instance.
+        /// </remarks>
         public ISequenceProcessorBuilder Clone()
         {
             return new SequenceProcessorBuilder(_data);
@@ -64,7 +76,7 @@ namespace TraTech.BpmnInterpreter.Core
         /// Registers a handler for a specific BPMN element type.
         /// </summary>
         /// <param name="elementTypeName">The name of the BPMN element type.</param>
-        /// <param name="bpmnSequenceElementHandler">The handler to use for the specified element type.</param>
+        /// <param name="bpmnSequenceElementHandler">The handler to use for elements of the specified type.</param>
         /// <returns>The current builder instance.</returns>
         public ISequenceProcessorBuilder UsingElementHandler(string elementTypeName, ISequenceElementHandler bpmnSequenceElementHandler)
         {
@@ -73,9 +85,21 @@ namespace TraTech.BpmnInterpreter.Core
         }
 
         /// <summary>
+        /// Registers a handler for a specific BPMN boundary element type.
+        /// </summary>
+        /// <param name="elementTypeName">The name of the BPMN boundary element type.</param>
+        /// <param name="bpmnBoundaryElementHandler">The handler to use for boundary events of the specified type.</param>
+        /// <returns>The current builder instance.</returns>
+        public ISequenceProcessorBuilder UsingBoundaryElementHandler(string elementTypeName, IBoundaryEventHandler bpmnBoundaryElementHandler)
+        {
+            _data.BoundaryElementHandlerMap.Add(elementTypeName, bpmnBoundaryElementHandler);
+            return this;
+        }
+
+        /// <summary>
         /// Sets the BPMN sequence to be processed.
         /// </summary>
-        /// <param name="bpmnSequence">The BPMN sequence.</param>
+        /// <param name="bpmnSequence">The BPMN sequence to be executed by the processor.</param>
         /// <returns>The current builder instance.</returns>
         public ISequenceProcessorBuilder WithBpmnSequence(BaseSequence bpmnSequence)
         {
@@ -86,7 +110,7 @@ namespace TraTech.BpmnInterpreter.Core
         /// <summary>
         /// Sets the data map to be used by the sequence processor.
         /// </summary>
-        /// <param name="dataMap">The data map.</param>
+        /// <param name="dataMap">The data map used for execution-scoped values.</param>
         /// <returns>The current builder instance.</returns>
         public ISequenceProcessorBuilder WithDataMap(IDataMap dataMap)
         {
@@ -102,6 +126,17 @@ namespace TraTech.BpmnInterpreter.Core
         public ISequenceProcessorBuilder WithDefaultElementHandler(ISequenceElementHandler bpmnSequenceElementHandler)
         {
             _data.DefaultElementHandler = bpmnSequenceElementHandler;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the default boundary element handler to be used when no specific boundary handler is registered for a boundary event type.
+        /// </summary>
+        /// <param name="bpmnBoundaryElementHandler">The default boundary element handler.</param>
+        /// <returns>The current builder instance.</returns>
+        public ISequenceProcessorBuilder WithDefaultBoundaryElementHandler(IBoundaryEventHandler bpmnBoundaryElementHandler)
+        {
+            _data.DefaultBoundaryElementHandler = bpmnBoundaryElementHandler;
             return this;
         }
     }
