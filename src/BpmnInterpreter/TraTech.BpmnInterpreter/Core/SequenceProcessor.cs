@@ -233,6 +233,20 @@ namespace TraTech.BpmnInterpreter.Core
                 _ => currentElement.NextElements,
             };
 
+            if (nextDecision is SequenceNextDecision.OverrideNext overrideNext)
+            {
+                var chosenIds = overrideNext.Next.Select(e => e.Id).ToHashSet();
+                foreach (var outgoing in currentElement.NextElements)
+                {
+                    if (!chosenIds.Contains(outgoing.Id)
+                        && _elementStateDict.TryGetValue(outgoing.Id, out var state)
+                        && state == ExecutionState.Ready)
+                    {
+                        _elementStateDict[outgoing.Id] = ExecutionState.DontProcess;
+                    }
+                }
+            }
+
             if (nextElements is null)
             {
                 return;
